@@ -13,11 +13,13 @@ let package = Package(
     ],
     targets: [
         .target(
-            name: "Primity"
+            name: "Primity",
+            path: "Sources"
         ),
         .testTarget(
             name: "PrimityTests",
-            dependencies: ["Primity"]
+            dependencies: ["Primity"],
+            path: "Tests"
         ),
     ]
 )
