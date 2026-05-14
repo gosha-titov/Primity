@@ -58,3 +58,4 @@ extension Stripped: WrappingWithRaggable, Raggable where Value: Raggable {}
 extension Truncated: WrappingWithRaggable, Raggable where Value: Raggable {}
 extension Collapsed: WrappingWithRaggable, Raggable where Value: Raggable {}
 extension Trimmed: WrappingWithRaggable, Raggable where Value: Raggable {}
+
