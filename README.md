@@ -132,6 +132,33 @@ typealias AnswerOptions = TwoThroughNine<OrderedSet<AnswerOption>>
 ```
 
 
+## Favorite Textual Compositions
+
+Here are the typealiases I use most often in real projects. 
+They show how a few primitives stack into domain-specific, self-documenting types.
+
+```swift
+typealias Title = NonEmpty<Truncated<Collapsed<Trimmed<String>>>>
+
+typealias Paragraph = NonEmpty<Collapsed<Trimmed<RichText>>>
+
+typealias Name = NonEmpty<Truncated<Collapsed<Trimmed<Stripped<String>>>>>
+
+typealias Tag = NonEmpty<Lowercased<Truncated<Collapsed<Trimmed<Stripped<String>>>>>>
+```
+
+```swift
+let title: Title? = "   Swift   Development   "
+// title is "Swift Development"
+
+let name: Name? = "👋 Mia 🌍"
+// name is "Mia"
+
+let tag: Tag? = "  SWIFT  DeV  "
+// tag is "swift dev"
+```
+
+
 ## Usage
 
 Wrappers understand literals:
@@ -184,6 +211,22 @@ Trimmed("Jobs")
 Methods are available for arrays, strings, dictionaries, and sets.
 
 
+## Tests Are No Longer Needed (Not a Joke)
+
+Every initializer used to require its own test suite: empty string, negative number, unsorted array.
+We were not testing business logic — we were testing that `guard` worked correctly.
+
+With wrappers, these checks are built into the type.
+`NonEmpty` cannot contain an empty string because the compiler simply will not allow such an instance to be created.
+`NonNegative` cannot be less than zero by definition of the type.
+
+It works exactly like `Equatable` or `Hashable` — we do not write tests that a dictionary hashes its keys correctly, because that is a language guarantee.
+The same thing happens here: validation has moved from runtime into the type system. 
+Testing it in your own models is a rather pointless exercise.
+
+Tests remain only for business logic. Checking "not empty", "not negative", "sorted" — **is no longer your concern**.
+
+
 ## Architecture
 
 Under the hood it is protocol-oriented programming, pure and simple:
@@ -216,6 +259,13 @@ extension Capitalized: Trimmable where Value: Trimmable {
 ```
 
 
+## The Base Rule
+
+A wrapper never changes the type of the wrapped value. It only validates or adjusts.
+
+That is why `Mapped` — replacing the element type — is against the philosophy and not implemented.
+
+
 ## Custom Types
 
 Want to wrap your own type? Conform it to the required protocol:
@@ -236,40 +286,99 @@ extension RichText: Collapsible {
 }
 
 typealias Bio = Collapsed<Trimmed<RichText>>
+
+
+// If you want to make usage clearer
+extension WrappingWithRepresentable where Expressed == RichText {
+    public func asRichText() -> RichText {
+        return expressed()
+    }
+}
 ```
 
 
-## Favorite Textual Compositions
+## Custom Wrappers
 
-Here are the typealiases I use most often in real projects. 
-They show how a few primitives stack into domain-specific, self-documenting types.
+Adding your own wrapper takes three steps: define the behavior protocol, implement the wrapper struct, and add the boilerplate extensions.
+
+### 1. Define the behavior protocol
 
 ```swift
-typealias Title = NonEmpty<Truncated<Collapsed<Trimmed<String>>>>
-
-typealias Paragraph = NonEmpty<Collapsed<Trimmed<RichText>>>
-
-typealias Name = NonEmpty<Truncated<Collapsed<Trimmed<Stripped<String>>>>>
-
-typealias Tag = NonEmpty<Lowercased<Truncated<Collapsed<Trimmed<Stripped<String>>>>>>
+protocol Normalizable {
+    func normalized() -> Self
+}
 ```
+
+### 2. Implement the wrapper
 
 ```swift
-let title: Title? = "   Swift   Development   "
-// title is "Swift Development"
-
-let name: Name? = "👋 Mia 🌍"
-// name is "Mia"
-
-let tag: Tag? = "  SWIFT  DeV  "
-// tag is "swift dev"
+struct Normalized<Value: Normalizable>: Wrapping {
+    let value: Value
+    init(_ value: Value) {
+        self.value = value.normalized()
+    }
+}
 ```
 
-## The Philosophy Note
+### 3. Add boilerplate extensions
 
-A wrapper never changes the type of the wrapped value. It only validates or adjusts.
+These make your wrapper compatible with the rest of the ecosystem. Pick only what you need.
 
-That is why `Mapped` — replacing the element type — is against the philosophy and not implemented.
+**Core protocols** — always add these:
+```swift
+extension Normalized: WrappingWithRepresentable where Value: Expressible {}
+extension Normalized: WrappingWithCodable, Codable where Value: Codable {}
+
+extension Normalized: Equatable where Value: Equatable {}
+extension Normalized: Hashable where Value: Hashable {}
+extension Normalized: Sendable where Value: Sendable {}
+```
+
+**Collection support** — if wrapping a collection:
+```swift
+extension Normalized: WrappingWithCollection, Collection, Sequence where Value: Collection {}
+extension Normalized: WrappingWithBidirectionalCollection, BidirectionalCollection where Value: BidirectionalCollection {}
+```
+
+**Mutation methods** — if you need `appending`, `removing`, etc.:
+```swift
+extension Normalized: WrappingWithMethods where Value: Expressible {}
+```
+
+**Literal initialization** — pick the literals your wrapper should support:
+```swift
+extension Normalized: WrappingWithArrayExpressible, ArrayExpressible, ExpressibleByArrayLiteral where Value: ArrayExpressible {}
+extension Normalized: WrappingWithStringExpressible, _ExpressibleByStringLiteral where Value: ExpressibleByStringLiteral {}
+extension Normalized: WrappingWithFloatExpressible, ExpressibleByFloatLiteral where Value: ExpressibleByFloatLiteral {}
+```
+
+**Compatibility with other wrappers** — forward behavior through the stack:
+```swift
+extension Normalized: WrappingWithEmptyable, Emptyable where Value: Emptyable {}
+extension Normalized: WrappingWithTrimmable, Trimmable where Value: Trimmable {}
+extension Normalized: WrappingWithCollapsible, Collapsible where Value: Collapsible {}
+```
+
+
+### 4. Add the bridging protocol (optional)
+
+If other wrappers should forward your behavior through the chain, add a bridging protocol:
+
+```swift
+protocol WrappingWithNormalizable: Wrapping, Normalizable where Value: Normalizable {
+    // No additional requirements
+}
+
+extension WrappingWithNormalizable {
+    func normalized() -> Self {
+        return Self(value.normalized())
+    }
+}
+
+// Forward through existing wrappers
+extension Capitalized: WrappingWithNormalizable where Value: Normalizable {}
+extension Lowercased: WrappingWithNormalizable where Value: Normalizable {}
+```
 
 
 ## Installation
