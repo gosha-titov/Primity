@@ -1,3 +1,6 @@
+
+<img width="1344" height="768" alt="primity_logo" src="https://github.com/user-attachments/assets/8b5c3147-ac38-43cb-9852-178c47507c26" />
+
 # Primity
 
 A collection of generic, reusable type primitives for building type-safe systems in Swift. 
@@ -122,6 +125,8 @@ Each layer does one thing. The result is guaranteed to be clean, non-empty, and 
 
 ```swift
 typealias Paragraph = NonEmpty<Collapsed<Trimmed<String>>>
+
+typealias TwoThroughNine<Value: Rangable> = InRange<RangeBounds.`2`, RangeBounds.`9`, Value>
 typealias AnswerOption = NonEmpty<Truncated<Collapsed<Trimmed<String>>>>
 typealias AnswerOptions = TwoThroughNine<OrderedSet<AnswerOption>>
 ```
@@ -234,6 +239,32 @@ typealias Bio = Collapsed<Trimmed<RichText>>
 ```
 
 
+## Favorite Textual Compositions
+
+Here are the typealiases I use most often in real projects. 
+They show how a few primitives stack into domain-specific, self-documenting types.
+
+```swift
+typealias Title = NonEmpty<Truncated<Collapsed<Trimmed<String>>>>
+
+typealias Paragraph = NonEmpty<Collapsed<Trimmed<RichText>>>
+
+typealias Name = NonEmpty<Truncated<Collapsed<Trimmed<Stripped<String>>>>>
+
+typealias Tag = NonEmpty<Lowercased<Truncated<Collapsed<Trimmed<Stripped<String>>>>>>
+```
+
+```swift
+let title: Title? = "   Swift   Development   "
+// title is "Swift Development"
+
+let name: Name? = "👋 Mia 🌍"
+// name is "Mia"
+
+let tag: Tag? = "  SWIFT  DeV  "
+// tag is "swift dev"
+```
+
 ## The Philosophy Note
 
 A wrapper never changes the type of the wrapped value. It only validates or adjusts.
@@ -243,7 +274,7 @@ That is why `Mapped` — replacing the element type — is against the philosoph
 
 ## Installation
 
-Add Primity via Swift Package Manager:
+Add `Primity` via Swift Package Manager:
 
 ```
 https://github.com/gosha-titov/Primity.git
@@ -255,7 +286,7 @@ Or in `Package.swift`:
 dependencies: [
     .package(
         url: "https://github.com/gosha-titov/Primity.git",
-        .upToNextMinor(from: "1.0.0")
+        .upToNextMinor(from: "1.0.1")
     )
 ]
 ```
