@@ -18,9 +18,9 @@ You add `Codable` manually.
 
 ```swift
 struct User: Sendable {
-    let name: String
-    let awards: [Award]
-    let progress: Double
+    let name: String      // Should be non-empty and trimmed at sides
+    let awards: [Award]   // Should be sorted in descending order
+    let progress: Double  // Should be not negative
 
     init?(name: String, awards: [Award], progress: Double) {
         let name = name.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -33,37 +33,28 @@ struct User: Sendable {
 ```
 
 Three fields but a wall of logic. 
-And the `Codable` part is still ahead — auto-synthesis bypasses your `init`, so you write `init(from:)` by hand. 
-For every model. In a large project that is thousands of lines of boilerplate.
-
-
-## The Problem
-
-Every Swift developer has written this:
+And the `Codable` part is still ahead — auto-synthesis bypasses your `init`, so you write `init(from:)` by hand:
 
 ```swift
-struct User: Sendable {
-    let name: String        // Should be non-empty and trimmed
-    let awards: [Award]     // Should be sorted in descending order
-    let progress: Double    // Should be non-negative
-
-    init?(name: String, awards: [Award], progress: Double) {
-        let name = name.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !name.isEmpty, progress >= 0 else { return nil }
-        self.name = name
-        self.awards = awards.sorted(by: >)
-        self.progress = progress
+extension User: Codable {
+    init(from decoder: any Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        guard let user = User(
+            name: try container.decode(String.self, forKey: .name),
+            awards: try container.decode([Award].self, forKey: .awards),
+            progress: try container.decode(Double.self, forKey: .progress)
+        ) else {
+            throw DecodingError.dataCorrupted(.init(
+                codingPath: decoder.codingPath,
+                debugDescription: "Invalid Data"
+            ))
+        }
+        self = user
     }
 }
 ```
-
-Three fields, and already a wall of logic in the initializer. 
-And that is the simplified example.
-
-Then you add `Codable` manually because auto-synthesis bypasses your `init` and writes values straight to properties. 
-So you write a custom `init(from:)` that calls your failable initializer and throws on invalid data. Over and over, for every model.
-
-And do not forget the **tests** — you must cover every `guard` branch in every initializer.
+ 
+For every model. In a large project that is thousands of lines of boilerplate.
 
 
 ## The Solution
@@ -114,7 +105,7 @@ Wrappers come in two flavors.
 **Validators** reject bad input (`init?`):
 - `NonEmpty` — not empty
 - `NonNegative` / `Positive` — numeric bounds
-- `InRange` — value bounds
+- `Bounded` — value within bounds
 
 **Adjusters** always accept and transform:
 - `Trimmed`, `Stripped`, `Collapsed` — whitespace
@@ -379,7 +370,7 @@ Or in `Package.swift`:
 dependencies: [
     .package(
         url: "https://github.com/gosha-titov/Primity.git",
-        .upToNextMinor(from: "2.0.0")
+        .upToNextMinor(from: "2.0.1")
     )
 ]
 ```
