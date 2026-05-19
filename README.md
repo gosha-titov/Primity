@@ -321,7 +321,7 @@ extension Normalized: BidirectionalCollection where Value: BidirectionalCollecti
 // Literals — no body needed
 extension Normalized: ArrayExpressible, ExpressibleByArrayLiteral where Value: ArrayExpressible {}
 extension Normalized: DictionaryExpressible, ExpressibleByDictionaryLiteral where Value: DictionaryExpressible {}
-extension Normalized: ExpressibleByStringLiteral & ExpressibleByExtendedGraphemeClusterLiteral & ExpressibleByUnicodeScalarLiteral where Value: ExpressibleByStringLiteral {}
+extension Normalized: ExpressibleByStringLiteral, ExpressibleByExtendedGraphemeClusterLiteral, ExpressibleByUnicodeScalarLiteral where Value: ExpressibleByStringLiteral {}
 extension Normalized: ExpressibleByIntegerLiteral where Value: ExpressibleByIntegerLiteral {}
 extension Normalized: ExpressibleByFloatLiteral where Value: ExpressibleByFloatLiteral {}
 
@@ -351,7 +351,6 @@ The wrapper serializes the inner value directly, without metadata.
 `Codable`, `Collection`, `Equatable`, `Hashable` — all work out of the box with empty-body extensions.
 
 A wrapper is just a container.
-```
 
 No bridging protocols. No generated code. Just conditional conformance and default implementations.
 
@@ -370,7 +369,7 @@ Or in `Package.swift`:
 dependencies: [
     .package(
         url: "https://github.com/gosha-titov/Primity.git",
-        .upToNextMinor(from: "2.0.1")
+        .upToNextMinor(from: "2.0.2")
     )
 ]
 ```
