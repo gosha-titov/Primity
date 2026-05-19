@@ -1,5 +1,21 @@
+import Foundation
 import Testing
 @testable import Primity
+
+@Test func codable() async throws {
+    
+    typealias Tag = NonEmpty<Lowercased<Truncated<Collapsed<Trimmed<Stripped<String>>>>>>
+    let tag = Tag(expressing: "swift development")!
+    
+    let data = try JSONEncoder().encode(tag)
+    let encodedTag = String(data: data, encoding: .utf8)!
+    let decodedTag = try JSONDecoder().decode(Tag.self, from: data)
+    
+    #expect(encodedTag == "\"swift development\"")
+    #expect(decodedTag.asString() == "swift development")
+    
+}
+
 
 @Test func composition() async throws {
     
@@ -37,20 +53,22 @@ import Testing
 
 @Test func inrange() async throws {
     
-    #expect(InRange<RangeBounds.`2`, RangeBounds.`5`, Int>(0) == nil)
-    #expect(InRange<RangeBounds.`2`, RangeBounds.`5`, [Int]>([]) == nil)
+    typealias TwoThroughFive<Value: Boundable> = Bounded<Bounds.`2`, Bounds.`5`, Value> where Value.Bound == Int
     
-    #expect(InRange<RangeBounds.`2`, RangeBounds.`5`, Int>(2) != nil)
-    #expect(InRange<RangeBounds.`2`, RangeBounds.`5`, [Int]>([1, 2]) != nil)
+    #expect(TwoThroughFive<Int>(0) == nil)
+    #expect(TwoThroughFive<[Int]>([]) == nil)
     
-    #expect(InRange<RangeBounds.`2`, RangeBounds.`5`, Int>(3) != nil)
-    #expect(InRange<RangeBounds.`2`, RangeBounds.`5`, [Int]>([1, 2, 3]) != nil)
+    #expect(TwoThroughFive<Int>(2) != nil)
+    #expect(TwoThroughFive<[Int]>([1, 2]) != nil)
     
-    #expect(InRange<RangeBounds.`2`, RangeBounds.`5`, Int>(5) != nil)
-    #expect(InRange<RangeBounds.`2`, RangeBounds.`5`, [Int]>([1, 2, 3, 4, 5]) != nil)
+    #expect(TwoThroughFive<Int>(3) != nil)
+    #expect(TwoThroughFive<[Int]>([1, 2, 3]) != nil)
     
-    #expect(InRange<RangeBounds.`2`, RangeBounds.`5`, Int>(6) == nil)
-    #expect(InRange<RangeBounds.`2`, RangeBounds.`5`, [Int]>([1, 2, 3, 4, 5, 6]) == nil)
+    #expect(TwoThroughFive<Int>(5) != nil)
+    #expect(TwoThroughFive<[Int]>([1, 2, 3, 4, 5]) != nil)
+    
+    #expect(TwoThroughFive<Int>(6) == nil)
+    #expect(TwoThroughFive<[Int]>([1, 2, 3, 4, 5, 6]) == nil)
 
 }
 

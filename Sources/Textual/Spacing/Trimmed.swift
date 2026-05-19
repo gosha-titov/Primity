@@ -1,7 +1,6 @@
 /// A wrapper that trims its value on creation.
 ///
 /// Whitespace is removed from both ends during initialization.
-///
 /// ## Example
 /// ```
 /// let text = Trimmed(" hello \n")
@@ -23,6 +22,13 @@ public struct Trimmed<Value>: Wrapping where Value: Trimmable {
 
 // MARK: - Behavior Extensions
 
+extension Trimmed: Sequence where Value: Sequence {}
+extension Trimmed: Collection where Value: Collection {}
+extension Trimmed: BidirectionalCollection where Value: BidirectionalCollection {}
 extension Trimmed: Equatable where Value: Equatable {}
 extension Trimmed: Hashable where Value: Hashable {}
 extension Trimmed: Sendable where Value: Sendable {}
+extension Trimmed: Codable where Value: Codable {}
+
+extension Trimmed: ArrayExpressible, ExpressibleByArrayLiteral where Value: ArrayExpressible {}
+extension Trimmed: ExpressibleByStringLiteral, ExpressibleByExtendedGraphemeClusterLiteral, ExpressibleByUnicodeScalarLiteral where Value: ExpressibleByStringLiteral {}

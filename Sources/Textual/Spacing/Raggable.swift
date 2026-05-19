@@ -2,7 +2,6 @@
 public protocol Raggable {
     
     /// Returns a copy with trailing whitespace removed from each line.
-    ///
     /// ## Example (underscores represent spaces)
     /// ```
     /// let string = """
@@ -22,22 +21,14 @@ public protocol Raggable {
 
 
 
-// MARK: - Behavior
+// MARK: - Compatibility Extensions
 
-/// A behavior that forwards `ragged()` through the wrapped value.
-public protocol WrappingWithRaggable: Wrapping, Raggable where Value: Raggable {
-    // No additional requirements
-}
-
-extension WrappingWithRaggable {
+extension Wrapping where Value: Raggable {
     public func ragged() -> Self {
         return Self(value.ragged())
     }
 }
 
-
-
-// MARK: - Compatibility Extensions
 
 extension String: Raggable {
     
@@ -51,11 +42,10 @@ extension String: Raggable {
 }
 
 
-extension Capitalized: WrappingWithRaggable, Raggable where Value: Raggable {}
-extension Lowercased: WrappingWithRaggable, Raggable where Value: Raggable {}
-extension Uppercased: WrappingWithRaggable, Raggable where Value: Raggable {}
-extension Stripped: WrappingWithRaggable, Raggable where Value: Raggable {}
-extension Truncated: WrappingWithRaggable, Raggable where Value: Raggable {}
-extension Collapsed: WrappingWithRaggable, Raggable where Value: Raggable {}
-extension Trimmed: WrappingWithRaggable, Raggable where Value: Raggable {}
-
+extension Capitalized: Raggable where Value: Raggable {}
+extension Lowercased: Raggable where Value: Raggable {}
+extension Uppercased: Raggable where Value: Raggable {}
+extension Stripped: Raggable where Value: Raggable {}
+extension Truncated: Raggable where Value: Raggable {}
+extension Collapsed: Raggable where Value: Raggable {}
+extension Trimmed: Raggable where Value: Raggable {}

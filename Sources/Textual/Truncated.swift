@@ -23,6 +23,13 @@ public struct Truncated<Value>: Wrapping where Value: Truncatable {
 
 // MARK: - Behavior Extensions
 
+extension Truncated: Sequence where Value: Sequence {}
+extension Truncated: Collection where Value: Collection {}
+extension Truncated: BidirectionalCollection where Value: BidirectionalCollection {}
 extension Truncated: Equatable where Value: Equatable {}
 extension Truncated: Hashable where Value: Hashable {}
 extension Truncated: Sendable where Value: Sendable {}
+extension Truncated: Codable where Value: Codable {}
+
+extension Truncated: ArrayExpressible, ExpressibleByArrayLiteral where Value: ArrayExpressible {}
+extension Truncated: ExpressibleByStringLiteral, ExpressibleByExtendedGraphemeClusterLiteral, ExpressibleByUnicodeScalarLiteral where Value: ExpressibleByStringLiteral {}

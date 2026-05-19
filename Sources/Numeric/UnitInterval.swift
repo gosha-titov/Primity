@@ -1,7 +1,6 @@
 /// A wrapper that clamps its value to the unit interval `0...1`.
 ///
 /// Values below `0` become `0`; values above `1` become `1`.
-///
 /// ## Example
 /// ```
 /// typealias Progress = UnitInterval<Double>
@@ -24,9 +23,11 @@ public struct UnitInterval<Value>: Wrapping where Value: FloatingPoint {
 
 // MARK: - Behavior Extensions
 
+extension UnitInterval: ExpressibleByFloatLiteral where Value: ExpressibleByFloatLiteral {}
 extension UnitInterval: Equatable where Value: Equatable {}
 extension UnitInterval: Hashable where Value: Hashable {}
 extension UnitInterval: Sendable where Value: Sendable {}
+extension UnitInterval: Codable where Value: Codable {}
 
 
 

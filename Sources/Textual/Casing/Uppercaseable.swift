@@ -2,7 +2,6 @@
 public protocol Uppercaseable {
     
     /// Returns a copy with all letters uppercased.
-    ///
     /// ## Example
     /// ```
     /// let string = "Hello, World!"
@@ -14,27 +13,18 @@ public protocol Uppercaseable {
 
 
 
-// MARK: - Behavior
+// MARK: - Compatibility Extensions
 
-/// A behavior that forwards `uppercased()` through the wrapped value.
-public protocol WrappingWithUppercaseable: Wrapping, Uppercaseable where Value: Uppercaseable {
-    // No additional requirements
-}
-
-extension WrappingWithUppercaseable {
+extension Wrapping where Value: Uppercaseable {
     public func uppercased() -> Self {
         return Self(value.uppercased())
     }
 }
 
-
-
-// MARK: - Compatibility Extensions
-
 extension String: Uppercaseable {}
 
-extension Stripped: WrappingWithUppercaseable, Uppercaseable where Value: Uppercaseable {}
-extension Truncated: WrappingWithUppercaseable, Uppercaseable where Value: Uppercaseable {}
-extension Collapsed: WrappingWithUppercaseable, Uppercaseable where Value: Uppercaseable {}
-extension Ragged: WrappingWithUppercaseable, Uppercaseable where Value: Uppercaseable {}
-extension Trimmed: WrappingWithUppercaseable, Uppercaseable where Value: Uppercaseable {}
+extension Stripped: Uppercaseable where Value: Uppercaseable {}
+extension Truncated: Uppercaseable where Value: Uppercaseable {}
+extension Collapsed: Uppercaseable where Value: Uppercaseable {}
+extension Ragged: Uppercaseable where Value: Uppercaseable {}
+extension Trimmed: Uppercaseable where Value: Uppercaseable {}

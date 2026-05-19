@@ -14,22 +14,13 @@ public protocol Truncatable {
 
 
 
-// MARK: - Behavior
+// MARK: - Compatibility Extensions
 
-/// A behavior that forwards `truncated()` through the wrapped value.
-public protocol WrappingWithTruncatable: Wrapping, Truncatable where Value: Truncatable {
-    // No additional requirements
-}
-
-extension WrappingWithTruncatable {
+extension Wrapping where Value: Truncatable {
     public func truncated() -> Self {
         return Self(value.truncated())
     }
 }
-
-
-
-// MARK: - Compatibility Extensions
 
 extension String: Truncatable {
     public func truncated() -> String {
@@ -37,11 +28,10 @@ extension String: Truncatable {
     }
 }
 
-
-extension Capitalized: WrappingWithTruncatable, Truncatable where Value: Truncatable {}
-extension Lowercased: WrappingWithTruncatable, Truncatable where Value: Truncatable {}
-extension Uppercased: WrappingWithTruncatable, Truncatable where Value: Truncatable {}
-extension Stripped: WrappingWithTruncatable, Truncatable where Value: Truncatable {}
-extension Collapsed: WrappingWithTruncatable, Truncatable where Value: Truncatable {}
-extension Ragged: WrappingWithTruncatable, Truncatable where Value: Truncatable {}
-extension Trimmed: WrappingWithTruncatable, Truncatable where Value: Truncatable {}
+extension Capitalized: Truncatable where Value: Truncatable {}
+extension Lowercased: Truncatable where Value: Truncatable {}
+extension Uppercased: Truncatable where Value: Truncatable {}
+extension Stripped: Truncatable where Value: Truncatable {}
+extension Collapsed: Truncatable where Value: Truncatable {}
+extension Ragged: Truncatable where Value: Truncatable {}
+extension Trimmed: Truncatable where Value: Truncatable {}

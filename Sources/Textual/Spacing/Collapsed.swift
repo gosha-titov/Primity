@@ -1,7 +1,6 @@
 /// A wrapper that collapses its value on creation.
 ///
 /// Consecutive whitespace is replaced with a single space during initialization.
-///
 /// ## Example
 /// ```
 /// typealias Paragraph = Collapsed<String>
@@ -25,6 +24,13 @@ public struct Collapsed<Value>: Wrapping where Value: Collapsible {
 
 // MARK: - Behavior Extensions
 
+extension Collapsed: Sequence where Value: Sequence {}
+extension Collapsed: Collection where Value: Collection {}
+extension Collapsed: BidirectionalCollection where Value: BidirectionalCollection {}
 extension Collapsed: Equatable where Value: Equatable {}
 extension Collapsed: Hashable where Value: Hashable {}
 extension Collapsed: Sendable where Value: Sendable {}
+extension Collapsed: Codable where Value: Codable {}
+
+extension Collapsed: ArrayExpressible, ExpressibleByArrayLiteral where Value: ArrayExpressible {}
+extension Collapsed: ExpressibleByStringLiteral, ExpressibleByExtendedGraphemeClusterLiteral, ExpressibleByUnicodeScalarLiteral where Value: ExpressibleByStringLiteral {}

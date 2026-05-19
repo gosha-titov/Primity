@@ -76,57 +76,43 @@ extension Expressible where Expressed == Self {
 
 
 
-// MARK: - Wrapping Behavior
+// MARK: - Compatibility Extensions
 
-/// A behavior that bridges `Wrapping` and `Expressible` when the wrapped value is itself `Expressible`.
-public protocol WrappingWithExpressible: Wrapping, Expressible where Value: Expressible {
-    // No additional requirements
-}
-
-/// A behavior that bridges `MaybeWrapping` and `MaybeExpressible` when the wrapped value is itself `Expressible`.
-public protocol MaybeWrappingWithExpressible: MaybeWrapping, MaybeExpressible where Value: Expressible {
-    // No additional requirements
-}
-
-
-extension WrappingWithExpressible {
+extension AnyWrapping where Value: AnyExpressible {
+    public typealias Expressed = Value.Expressed
     public func expressed() -> Value.Expressed {
         return value.expressed()
     }
+}
+
+extension Wrapping where Value: Expressible {
     public init(expressing value: Value.Expressed) {
         self.init(Value(expressing: value))
     }
 }
 
-extension MaybeWrappingWithExpressible {
-    public func expressed() -> Value.Expressed {
-        return value.expressed()
-    }
+extension MaybeWrapping where Value: Expressible {
     public init?(expressing value: Value.Expressed) {
         self.init(Value(expressing: value))
     }
 }
 
+extension NonEmpty: MaybeExpressible, AnyExpressible where Value: Expressible {}
+extension Bounded: MaybeExpressible, AnyExpressible where Value: Expressible {}
+extension Sorted: Expressible, AnyExpressible where Value: Expressible {}
 
+extension NonNegative: MaybeExpressible, AnyExpressible where Value: Expressible {}
+extension Positive: MaybeExpressible, AnyExpressible where Value: Expressible {}
+extension UnitInterval: Expressible, AnyExpressible where Value: Expressible {}
 
-// MARK: - Compatibility Extensions
-
-extension NonEmpty: MaybeWrappingWithExpressible, MaybeExpressible, AnyExpressible where Value: Expressible {}
-extension InRange: MaybeWrappingWithExpressible, MaybeExpressible, AnyExpressible where Value: Expressible {}
-extension Sorted: WrappingWithExpressible, Expressible, AnyExpressible where Value: Expressible {}
-
-extension NonNegative: MaybeWrappingWithExpressible, MaybeExpressible, AnyExpressible where Value: Expressible {}
-extension Positive: MaybeWrappingWithExpressible, MaybeExpressible, AnyExpressible where Value: Expressible {}
-extension UnitInterval: WrappingWithExpressible, Expressible, AnyExpressible where Value: Expressible {}
-
-extension Capitalized: WrappingWithExpressible, Expressible, AnyExpressible where Value: Expressible {}
-extension Lowercased: WrappingWithExpressible, Expressible, AnyExpressible where Value: Expressible {}
-extension Uppercased: WrappingWithExpressible, Expressible, AnyExpressible where Value: Expressible {}
-extension Stripped: WrappingWithExpressible, Expressible, AnyExpressible where Value: Expressible {}
-extension Truncated: WrappingWithExpressible, Expressible, AnyExpressible where Value: Expressible {}
-extension Collapsed: WrappingWithExpressible, Expressible, AnyExpressible where Value: Expressible {}
-extension Ragged: WrappingWithExpressible, Expressible, AnyExpressible where Value: Expressible {}
-extension Trimmed: WrappingWithExpressible, Expressible, AnyExpressible where Value: Expressible {}
+extension Capitalized: Expressible, AnyExpressible where Value: Expressible {}
+extension Lowercased: Expressible, AnyExpressible where Value: Expressible {}
+extension Uppercased: Expressible, AnyExpressible where Value: Expressible {}
+extension Stripped: Expressible, AnyExpressible where Value: Expressible {}
+extension Truncated: Expressible, AnyExpressible where Value: Expressible {}
+extension Collapsed: Expressible, AnyExpressible where Value: Expressible {}
+extension Ragged: Expressible, AnyExpressible where Value: Expressible {}
+extension Trimmed: Expressible, AnyExpressible where Value: Expressible {}
 
 
 extension Array: Expressible {}

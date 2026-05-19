@@ -2,7 +2,6 @@
 public protocol Lowercaseable {
     
     /// Returns a copy with all letters lowercased.
-    ///
     /// ## Example
     /// ```
     /// let string = "Hello, World!"
@@ -14,27 +13,18 @@ public protocol Lowercaseable {
 
 
 
-// MARK: - Behavior
+// MARK: - Compatibility Extensions
 
-/// A behavior that forwards `lowercased()` through the wrapped value.
-public protocol WrappingWithLowercaseable: Wrapping, Lowercaseable where Value: Lowercaseable {
-    // No additional requirements
-}
-
-extension WrappingWithLowercaseable {
+extension Wrapping where Value: Lowercaseable {
     public func lowercased() -> Self {
         return Self(value.lowercased())
     }
 }
 
-
-
-// MARK: - Compatibility Extensions
-
 extension String: Lowercaseable {}
 
-extension Stripped: WrappingWithLowercaseable, Lowercaseable where Value: Lowercaseable {}
-extension Truncated: WrappingWithLowercaseable, Lowercaseable where Value: Lowercaseable {}
-extension Collapsed: WrappingWithLowercaseable, Lowercaseable where Value: Lowercaseable {}
-extension Ragged: WrappingWithLowercaseable, Lowercaseable where Value: Lowercaseable {}
-extension Trimmed: WrappingWithLowercaseable, Lowercaseable where Value: Lowercaseable {}
+extension Stripped: Lowercaseable where Value: Lowercaseable {}
+extension Truncated: Lowercaseable where Value: Lowercaseable {}
+extension Collapsed: Lowercaseable where Value: Lowercaseable {}
+extension Ragged: Lowercaseable where Value: Lowercaseable {}
+extension Trimmed: Lowercaseable where Value: Lowercaseable {}

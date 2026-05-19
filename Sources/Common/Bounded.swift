@@ -4,7 +4,7 @@
 ///
 /// ## Example 1
 /// ```
-/// typealias OneThroughFive<Value: Rangable> = InRange<RangeBounds.`0`, RangeBounds.`5`, Value>
+/// typealias OneThroughFive<Value: Boundable> = Bounded<Bounds.`0`, Bounds.`5`, Value> where Value.Bound == Int
 ///
 /// typealias Numbers = OneThroughFive<Array<Int>>
 ///
@@ -13,13 +13,13 @@
 ///
 /// ## Example 2
 /// ```
-/// typealias Child<Value: Rangable> = InRange<RangeBounds.`0`, RangeBounds.`18`, Value>
+/// typealias Child<Value: Boundable> = Bounded<Bounds.`0`, Bounds.`18`, Value> where Value.Bound == Int
 ///
 /// if let child = Child(user) {
 ///     pediatricHospital.makeApointment(for: child)
 /// }
 /// ```
-public struct InRange<LowerBound: RangeBound, UpperBound: RangeBound, Value: Rangable>: MaybeWrapping where LowerBound.Value == UpperBound.Value, LowerBound.Value == Value.RangeBound {
+public struct Bounded<LowerBound: Bound, UpperBound: Bound, Value: Boundable>: MaybeWrapping where LowerBound.Value == UpperBound.Value, LowerBound.Value == Value.Bound {
     
     /// The underlying value, guaranteed to be within the specified range.
     public let value: Value
@@ -37,6 +37,10 @@ public struct InRange<LowerBound: RangeBound, UpperBound: RangeBound, Value: Ran
 
 // MARK: - Behavior Extensions
 
-extension InRange: Equatable where Value: Equatable {}
-extension InRange: Hashable where Value: Hashable {}
-extension InRange: Sendable where Value: Sendable {}
+extension Bounded: Sequence where Value: Sequence {}
+extension Bounded: Collection where Value: Collection {}
+extension Bounded: BidirectionalCollection where Value: BidirectionalCollection {}
+extension Bounded: Equatable where Value: Equatable {}
+extension Bounded: Hashable where Value: Hashable {}
+extension Bounded: Sendable where Value: Sendable {}
+extension Bounded: Codable where Value: Codable {}

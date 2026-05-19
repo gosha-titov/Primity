@@ -52,6 +52,11 @@ public typealias Descended<Value: Sortable> = Sorted<DescendingSortingStrategy<V
 
 // MARK: - Behavior Extensions
 
+extension Sorted: Sequence where Value: Sequence {}
+extension Sorted: Collection where Value: Collection {}
+extension Sorted: BidirectionalCollection where Value: BidirectionalCollection {}
 extension Sorted: Equatable where Value: Equatable {}
 extension Sorted: Hashable where Value: Hashable {}
 extension Sorted: Sendable where Value: Sendable {}
+
+extension Sorted: ArrayExpressible, ExpressibleByArrayLiteral where Value: ArrayExpressible {}

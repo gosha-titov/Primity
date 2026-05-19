@@ -1,7 +1,6 @@
 /// A wrapper that ensures a value is non-empty.
 ///
 /// Returns `nil` when attempting to wrap an empty value during initialization.
-///
 /// ## Example
 /// ```
 /// typealias Title = NonEmpty<String>
@@ -22,6 +21,54 @@ public struct NonEmpty<Value>: MaybeWrapping where Value: Emptyable {
 
 
 // MARK: - Behavior Extensions
+
+extension NonEmpty where Value: Expressible, Value.Expressed: _PrimityArray {
+    
+    /// Creates a non-empty wrapper containing a single element.
+    /// ## Example
+    /// ```
+    /// typealias Numbers = NonEmpty<Array<Int>>
+    ///
+    /// let numbers: Numbers = .single(10)
+    /// ```
+    public static func single(_ element: Expressed.Element) -> Self {
+        return NonEmpty(expressing: [element] as! Expressed)!
+    }
+    
+}
+
+
+extension NonEmpty where Value: Expressible, Value.Expressed: _PrimitySet {
+    
+    /// Creates a non-empty wrapper containing a single-element set.
+    /// ## Example
+    /// ```
+    /// typealias Numbers = NonEmpty<Set<Int>>
+    ///
+    /// let numbers: Numbers = .single(10)
+    /// ```
+    public static func single(_ element: Expressed.Element) -> Self {
+        return NonEmpty(expressing: Set([element]) as! Expressed)!
+    }
+    
+}
+
+
+extension NonEmpty where Value: Expressible, Value.Expressed: _PrimityDictionary {
+    
+    /// Creates a non-empty wrapper containing a single key-value pair.
+    /// ## Example
+    /// ```
+    /// typealias Greetings = NonEmpty<Dictionary<Stirng, String>>
+    ///
+    /// let numbers: Greetings = .single("Hello", for: "en")
+    /// ```
+    public static func single(_ value: Expressed.Value, for key: Expressed.Key) -> Self {
+        return NonEmpty(expressing: [key: value] as! Expressed)!
+    }
+    
+}
+
 
 extension NonEmpty where Value: Collection {
     
@@ -59,6 +106,10 @@ extension NonEmpty where Value: Collection, Value.Element: Comparable {
 }
 
 
+extension NonEmpty: Sequence where Value: Sequence {}
+extension NonEmpty: Collection where Value: Collection {}
+extension NonEmpty: BidirectionalCollection where Value: BidirectionalCollection {}
 extension NonEmpty: Equatable where Value: Equatable {}
 extension NonEmpty: Hashable where Value: Hashable {}
 extension NonEmpty: Sendable where Value: Sendable {}
+extension NonEmpty: Codable where Value: Codable {}

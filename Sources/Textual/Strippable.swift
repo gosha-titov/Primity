@@ -16,22 +16,15 @@ public protocol Strippable {
 
 
 
-// MARK: - Behavior
+// MARK: - Compatibility Extensions
 
-/// A behavior that forwards `stripped()` through the wrapped value.
-public protocol WrappingWithStrippable: Wrapping, Strippable where Value: Strippable {
-    // No additional requirements
-}
-
-extension WrappingWithStrippable {
+extension Wrapping where Value: Strippable {
     public func stripped() -> Self {
         return Self(value.stripped())
     }
 }
 
 
-
-// MARK: - Compatibility Extensions
 
 extension String: Strippable {
 
@@ -48,13 +41,13 @@ extension String: Strippable {
 }
 
 
-extension Capitalized: WrappingWithStrippable, Strippable where Value: Strippable {}
-extension Lowercased: WrappingWithStrippable, Strippable where Value: Strippable {}
-extension Uppercased: WrappingWithStrippable, Strippable where Value: Strippable {}
-extension Truncated: WrappingWithStrippable, Strippable where Value: Strippable {}
-extension Collapsed: WrappingWithStrippable, Strippable where Value: Strippable {}
-extension Ragged: WrappingWithStrippable, Strippable where Value: Strippable {}
-extension Trimmed: WrappingWithStrippable, Strippable where Value: Strippable {}
+extension Capitalized: Strippable where Value: Strippable {}
+extension Lowercased: Strippable where Value: Strippable {}
+extension Uppercased: Strippable where Value: Strippable {}
+extension Truncated: Strippable where Value: Strippable {}
+extension Collapsed: Strippable where Value: Strippable {}
+extension Ragged: Strippable where Value: Strippable {}
+extension Trimmed: Strippable where Value: Strippable {}
 
 
 

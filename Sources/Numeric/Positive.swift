@@ -1,7 +1,6 @@
 /// A wrapper that ensures a value is positive.
 ///
 /// Returns `nil` when attempting to wrap a non-positive value during initialization.
-///
 /// ## Example
 /// ```
 /// typealias PieChartSliceValue = Positive<Double>
@@ -28,3 +27,4 @@ public struct Positive<Value>: MaybeWrapping where Value: Positivable {
 extension Positive: Equatable where Value: Equatable {}
 extension Positive: Hashable where Value: Hashable {}
 extension Positive: Sendable where Value: Sendable {}
+extension Positive: Codable where Value: Codable {}

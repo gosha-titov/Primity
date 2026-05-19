@@ -16,22 +16,13 @@ public protocol Capitalizable {
 
 
 
-// MARK: - Behavior
+// MARK: - Compatibility Extensions
 
-/// A behavior that forwards `capitalized()` through the wrapped value.
-public protocol WrappingWithCapitalizable: Wrapping, Capitalizable where Value: Capitalizable {
-    // No additional requirements
-}
-
-extension WrappingWithCapitalizable {
+extension Wrapping where Value: Capitalizable {
     public func capitalized() -> Self {
         return Self(value.capitalized())
     }
 }
-
-
-
-// MARK: - Compatibility Extensions
 
 extension String: Capitalizable {
     public func capitalized() -> String {
@@ -39,8 +30,8 @@ extension String: Capitalizable {
     }
 }
 
-extension Stripped: WrappingWithCapitalizable, Capitalizable where Value: Capitalizable {}
-extension Truncated: WrappingWithCapitalizable, Capitalizable where Value: Capitalizable {}
-extension Collapsed: WrappingWithCapitalizable, Capitalizable where Value: Capitalizable {}
-extension Ragged: WrappingWithCapitalizable, Capitalizable where Value: Capitalizable {}
-extension Trimmed: WrappingWithCapitalizable, Capitalizable where Value: Capitalizable {}
+extension Stripped: Capitalizable where Value: Capitalizable {}
+extension Truncated: Capitalizable where Value: Capitalizable {}
+extension Collapsed: Capitalizable where Value: Capitalizable {}
+extension Ragged: Capitalizable where Value: Capitalizable {}
+extension Trimmed: Capitalizable where Value: Capitalizable {}

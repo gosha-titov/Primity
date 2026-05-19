@@ -1,7 +1,6 @@
 /// A wrapper that ensures a value is non-negative.
 ///
 /// Returns `nil` when attempting to wrap a negative value during initialization.
-///
 /// ## Example
 /// ```
 /// typealias PlayerLevel = NonNegative<Double>
@@ -28,3 +27,4 @@ public struct NonNegative<Value>: MaybeWrapping where Value: Negativable {
 extension NonNegative: Equatable where Value: Equatable {}
 extension NonNegative: Hashable where Value: Hashable {}
 extension NonNegative: Sendable where Value: Sendable {}
+extension NonNegative: Codable where Value: Codable {}

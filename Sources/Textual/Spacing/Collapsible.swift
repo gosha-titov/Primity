@@ -4,7 +4,6 @@ import Foundation
 public protocol Collapsible {
     
     /// Returns a copy with consecutive whitespace characters replaced by a single space.
-    ///
     /// ## Example
     /// ```
     /// let string = "Hello, \n  world!"
@@ -16,22 +15,13 @@ public protocol Collapsible {
 
 
 
-// MARK: - Behavior
+// MARK: - Compatibility Extensions
 
-/// A behavior that forwards `collapsed()` through the wrapped value.
-public protocol WrappingWithCollapsible: Wrapping, Collapsible where Value: Collapsible {
-    // No additional requirements
-}
-
-extension WrappingWithCollapsible {
+extension Wrapping where Value: Collapsible {
     public func collapsed() -> Self {
         return Self(value.collapsed())
     }
 }
-
-
-
-// MARK: - Compatibility Extensions
 
 extension String: Collapsible {
     
@@ -45,10 +35,10 @@ extension String: Collapsible {
 }
 
 
-extension Capitalized: WrappingWithCollapsible, Collapsible where Value: Collapsible {}
-extension Lowercased: WrappingWithCollapsible, Collapsible where Value: Collapsible {}
-extension Uppercased: WrappingWithCollapsible, Collapsible where Value: Collapsible {}
-extension Stripped: WrappingWithCollapsible, Collapsible where Value: Collapsible {}
-extension Truncated: WrappingWithCollapsible, Collapsible where Value: Collapsible {}
-extension Ragged: WrappingWithCollapsible, Collapsible where Value: Collapsible {}
-extension Trimmed: WrappingWithCollapsible, Collapsible where Value: Collapsible {}
+extension Capitalized: Collapsible where Value: Collapsible {}
+extension Lowercased: Collapsible where Value: Collapsible {}
+extension Uppercased: Collapsible where Value: Collapsible {}
+extension Stripped: Collapsible where Value: Collapsible {}
+extension Truncated: Collapsible where Value: Collapsible {}
+extension Ragged: Collapsible where Value: Collapsible {}
+extension Trimmed: Collapsible where Value: Collapsible {}

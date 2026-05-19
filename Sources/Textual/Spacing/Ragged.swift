@@ -1,7 +1,6 @@
 /// A wrapper that rags its value on creation.
 ///
 /// Trailing whitespace is removed from each line during initialization.
-///
 /// ## Example (underscores represent spaces)
 /// ```
 /// typealias CodeSnippet = Ragged<String>
@@ -33,6 +32,13 @@ public struct Ragged<Value>: Wrapping where Value: Raggable {
 
 // MARK: - Behavior Extensions
 
+extension Ragged: Sequence where Value: Sequence {}
+extension Ragged: Collection where Value: Collection {}
+extension Ragged: BidirectionalCollection where Value: BidirectionalCollection {}
 extension Ragged: Equatable where Value: Equatable {}
 extension Ragged: Hashable where Value: Hashable {}
 extension Ragged: Sendable where Value: Sendable {}
+extension Ragged: Codable where Value: Codable {}
+
+extension Ragged: ArrayExpressible, ExpressibleByArrayLiteral where Value: ArrayExpressible {}
+extension Ragged: ExpressibleByStringLiteral, ExpressibleByExtendedGraphemeClusterLiteral, ExpressibleByUnicodeScalarLiteral where Value: ExpressibleByStringLiteral {}

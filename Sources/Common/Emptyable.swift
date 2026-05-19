@@ -8,33 +8,24 @@ public protocol Emptyable {
 
 
 
-// MARK: - Behavior
+// MARK: - Compatibility Extensions
 
-/// A behavior that forwards `isEmpty` through the wrapped value.
-public protocol WrappingWithEmptyable: AnyWrapping, Emptyable where Value: Emptyable {
-    // No additional requirements
-}
-
-extension WrappingWithEmptyable {
+extension Wrapping where Value: Emptyable {
     public var isEmpty: Bool {
         return value.isEmpty
     }
 }
 
+extension Sorted: Emptyable where Value: Emptyable {}
 
-
-// MARK: - Compatibility Extensions
-
-extension Sorted: WrappingWithEmptyable, Emptyable where Value: Emptyable {}
-
-extension Capitalized: WrappingWithEmptyable, Emptyable where Value: Emptyable {}
-extension Lowercased: WrappingWithEmptyable, Emptyable where Value: Emptyable {}
-extension Uppercased: WrappingWithEmptyable, Emptyable where Value: Emptyable {}
-extension Stripped: WrappingWithEmptyable, Emptyable where Value: Emptyable {}
-extension Truncated: WrappingWithEmptyable, Emptyable where Value: Emptyable {}
-extension Collapsed: WrappingWithEmptyable, Emptyable where Value: Emptyable {}
-extension Ragged: WrappingWithEmptyable, Emptyable where Value: Emptyable {}
-extension Trimmed: WrappingWithEmptyable, Emptyable where Value: Emptyable {}
+extension Capitalized: Emptyable where Value: Emptyable {}
+extension Lowercased: Emptyable where Value: Emptyable {}
+extension Uppercased: Emptyable where Value: Emptyable {}
+extension Stripped: Emptyable where Value: Emptyable {}
+extension Truncated: Emptyable where Value: Emptyable {}
+extension Collapsed: Emptyable where Value: Emptyable {}
+extension Ragged: Emptyable where Value: Emptyable {}
+extension Trimmed: Emptyable where Value: Emptyable {}
 
 
 extension Dictionary: Emptyable {}

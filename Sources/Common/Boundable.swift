@@ -1,11 +1,11 @@
 /// A type that can be checked against a closed range.
-public protocol Rangable {
+public protocol Boundable {
     
     /// The type used for range boundaries.
-    associatedtype RangeBound: Comparable
+    associatedtype Bound: Comparable
     
     /// Returns `true` if the instance falls within the given range.
-    func isWithin(_ range: ClosedRange<RangeBound>) -> Bool
+    func isWithin(_ range: ClosedRange<Bound>) -> Bool
     
 }
 
@@ -13,43 +13,43 @@ public protocol Rangable {
 
 // MARK: - Compatibility Extensions
 
-extension Array: Rangable {
+extension Array: Boundable {
     public func isWithin(_ range: ClosedRange<Int>) -> Bool {
         return range.contains(count)
     }
 }
 
-extension String: Rangable {
+extension String: Boundable {
     public func isWithin(_ range: ClosedRange<Int>) -> Bool {
         return range.contains(count)
     }
 }
 
-extension Set: Rangable {
+extension Set: Boundable {
     public func isWithin(_ range: ClosedRange<Int>) -> Bool {
         return range.contains(count)
     }
 }
 
-extension Dictionary: Rangable {
+extension Dictionary: Boundable {
     public func isWithin(_ range: ClosedRange<Int>) -> Bool {
         return range.contains(count)
     }
 }
 
-extension Int: Rangable {
+extension Int: Boundable {
     public func isWithin(_ range: ClosedRange<Int>) -> Bool {
         return range.contains(self)
     }
 }
 
-extension Double: Rangable {
+extension Double: Boundable {
     public func isWithin(_ range: ClosedRange<Double>) -> Bool {
         return range.contains(self)
     }
 }
 
-extension Float: Rangable {
+extension Float: Boundable {
     public func isWithin(_ range: ClosedRange<Float>) -> Bool {
         return range.contains(self)
     }

@@ -4,7 +4,6 @@ import Foundation
 public protocol Trimmable {
     
     /// Returns a copy with whitespace removed from the start and end.
-    /// 
     /// ## Example
     /// ```
     /// let string = " hello \n"
@@ -16,22 +15,13 @@ public protocol Trimmable {
 
 
 
-// MARK: - Behavior
+// MARK: - Compatibility Extensions
 
-/// A behavior that forwards `trimmed()` through the wrapped value.
-public protocol WrappingWithTrimmable: Wrapping, Trimmable where Value: Trimmable {
-    // No additional requirements
-}
-
-extension WrappingWithTrimmable {
+extension Wrapping where Value: Trimmable {
     public func trimmed() -> Self {
         return Self(value.trimmed())
     }
 }
-
-
-
-// MARK: - Compatibility Extensions
 
 extension String: Trimmable {
     
@@ -42,10 +32,10 @@ extension String: Trimmable {
 }
 
 
-extension Capitalized: WrappingWithTrimmable, Trimmable where Value: Trimmable {}
-extension Lowercased: WrappingWithTrimmable, Trimmable where Value: Trimmable {}
-extension Uppercased: WrappingWithTrimmable, Trimmable where Value: Trimmable {}
-extension Stripped: WrappingWithTrimmable, Trimmable where Value: Trimmable {}
-extension Truncated: WrappingWithTrimmable, Trimmable where Value: Trimmable {}
-extension Collapsed: WrappingWithTrimmable, Trimmable where Value: Trimmable {}
-extension Ragged: WrappingWithTrimmable, Trimmable where Value: Trimmable {}
+extension Capitalized: Trimmable where Value: Trimmable {}
+extension Lowercased: Trimmable where Value: Trimmable {}
+extension Uppercased: Trimmable where Value: Trimmable {}
+extension Stripped: Trimmable where Value: Trimmable {}
+extension Truncated: Trimmable where Value: Trimmable {}
+extension Collapsed: Trimmable where Value: Trimmable {}
+extension Ragged: Trimmable where Value: Trimmable {}
