@@ -24,6 +24,15 @@ public struct Positive<Value>: MaybeWrapping where Value: Positivable {
 
 // MARK: - Behavior Extensions
 
+extension Positive {
+    
+    public static func errorMessage(for value: Value) -> String {
+        return "Value '\(value)' must be positive"
+    }
+    
+}
+
+
 extension Positive: Equatable where Value: Equatable {}
 extension Positive: Hashable where Value: Hashable {}
 extension Positive: Sendable where Value: Sendable {}

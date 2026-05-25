@@ -22,6 +22,21 @@ public struct NonEmpty<Value>: MaybeWrapping where Value: Emptyable {
 
 // MARK: - Behavior Extensions
 
+extension NonEmpty {
+
+    public static func errorMessage(for value: Value) -> String {
+        return "Value must not be empty"
+    }
+    
+    /// Creates an instance by wrapping the given value, or returns `nil` if the value exists and not empty.
+    public init?(_ value: Value?) {
+        guard let value, !value.isEmpty else { return nil }
+        self.value = value
+    }
+    
+}
+
+
 extension NonEmpty where Value: Expressible, Value.Expressed: _PrimityArray {
     
     /// Creates a non-empty wrapper containing a single element.

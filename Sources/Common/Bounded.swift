@@ -37,6 +37,15 @@ public struct Bounded<LowerBound: Bound, UpperBound: Bound, Value: Boundable>: M
 
 // MARK: - Behavior Extensions
 
+extension Bounded {
+
+    public static func errorMessage(for value: Value) -> String {
+        return "Value '\(value)' must be within bounds \(LowerBound.value...UpperBound.value)"
+    }
+    
+}
+
+
 extension Bounded: Sequence where Value: Sequence {}
 extension Bounded: Collection where Value: Collection {}
 extension Bounded: BidirectionalCollection where Value: BidirectionalCollection {}

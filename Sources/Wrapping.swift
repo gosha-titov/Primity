@@ -17,6 +17,9 @@ public protocol Wrapping: AnyWrapping {
 /// The failable initializer returns `nil` when the value is invalid.
 public protocol MaybeWrapping: AnyWrapping {
     
+    /// Returns a human-readable message describing why the given value is invalid.
+    static func errorMessage(for value: Value) -> String
+    
     /// Creates an instance by wrapping the given value, or returns `nil` if the value does not satisfy the wrapper's requirements.
     init?(_ value: Value)
     
@@ -39,6 +42,15 @@ public protocol AnyWrapping: CustomStringConvertible {
 
 
 // MARK: - Behavior Extensions
+
+extension MaybeWrapping {
+    
+    public static func errorMessage(for value: Value) -> String {
+        return "Invalid value: \(value)"
+    }
+    
+}
+
 
 extension AnyWrapping {
     

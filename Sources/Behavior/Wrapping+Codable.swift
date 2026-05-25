@@ -43,7 +43,7 @@ extension MaybeWrapping where Value: Codable {
         guard let wrapper = Self(value) else {
             throw DecodingError.dataCorrupted(.init(
                 codingPath: decoder.codingPath,
-                debugDescription: "Invalid value"
+                debugDescription: Self.errorMessage(for: value)
             ))
         }
         self = wrapper
