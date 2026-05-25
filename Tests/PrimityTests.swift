@@ -51,7 +51,7 @@ import Testing
 }
 
 
-@Test func inrange() async throws {
+@Test func bounded() async throws {
     
     typealias TwoThroughFive<Value: Boundable> = Bounded<Bounds.`2`, Bounds.`5`, Value> where Value.Bound == Int
     
