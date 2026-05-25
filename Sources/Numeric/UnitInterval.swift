@@ -7,13 +7,13 @@
 ///
 /// let progress: Progress = 0.97
 /// ```
-public struct UnitInterval<Value>: Wrapping where Value: FloatingPoint {
+public struct UnitInterval<Wrapped>: Wrapping where Wrapped: FloatingPoint {
     
     /// The underlying value between `0` and `1`.
-    public let value: Value
+    public let value: Wrapped
     
     /// Creates an instance with the given value clamped to `0...1`.
-    public init(_ value: Value) {
+    public init(_ value: Wrapped) {
         self.value = value.clamped(to: 0...1)
     }
     
@@ -23,11 +23,11 @@ public struct UnitInterval<Value>: Wrapping where Value: FloatingPoint {
 
 // MARK: - Behavior Extensions
 
-extension UnitInterval: ExpressibleByFloatLiteral where Value: ExpressibleByFloatLiteral {}
-extension UnitInterval: Equatable where Value: Equatable {}
-extension UnitInterval: Hashable where Value: Hashable {}
-extension UnitInterval: Sendable where Value: Sendable {}
-extension UnitInterval: Codable where Value: Codable {}
+extension UnitInterval: ExpressibleByFloatLiteral where Wrapped: ExpressibleByFloatLiteral {}
+extension UnitInterval: Equatable where Wrapped: Equatable {}
+extension UnitInterval: Hashable where Wrapped: Hashable {}
+extension UnitInterval: Sendable where Wrapped: Sendable {}
+extension UnitInterval: Codable where Wrapped: Codable {}
 
 
 

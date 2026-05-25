@@ -8,13 +8,13 @@
 /// let text: Abbreviation = "url"
 /// print(text) //           "URL"
 /// ```
-public struct Uppercased<Value>: Wrapping where Value: Uppercaseable {
+public struct Uppercased<Wrapped>: Wrapping where Wrapped: Uppercaseable {
     
     /// The underlying uppercased textual value.
-    public let value: Value
+    public let value: Wrapped
     
     /// Creates an instance by uppercasing the given value.
-    public init(_ value: Value) {
+    public init(_ value: Wrapped) {
         self.value = value.uppercased()
     }
     
@@ -24,13 +24,13 @@ public struct Uppercased<Value>: Wrapping where Value: Uppercaseable {
 
 // MARK: - Behavior Extensions
 
-extension Uppercased: Sequence where Value: Sequence {}
-extension Uppercased: Collection where Value: Collection {}
-extension Uppercased: BidirectionalCollection where Value: BidirectionalCollection {}
-extension Uppercased: Equatable where Value: Equatable {}
-extension Uppercased: Hashable where Value: Hashable {}
-extension Uppercased: Sendable where Value: Sendable {}
-extension Uppercased: Codable where Value: Codable {}
+extension Uppercased: Sequence where Wrapped: Sequence {}
+extension Uppercased: Collection where Wrapped: Collection {}
+extension Uppercased: BidirectionalCollection where Wrapped: BidirectionalCollection {}
+extension Uppercased: Equatable where Wrapped: Equatable {}
+extension Uppercased: Hashable where Wrapped: Hashable {}
+extension Uppercased: Sendable where Wrapped: Sendable {}
+extension Uppercased: Codable where Wrapped: Codable {}
 
-extension Uppercased: ArrayExpressible, ExpressibleByArrayLiteral where Value: ArrayExpressible {}
-extension Uppercased: ExpressibleByStringLiteral, ExpressibleByExtendedGraphemeClusterLiteral, ExpressibleByUnicodeScalarLiteral where Value: ExpressibleByStringLiteral {}
+extension Uppercased: ArrayExpressible, ExpressibleByArrayLiteral where Wrapped: ArrayExpressible {}
+extension Uppercased: ExpressibleByStringLiteral, ExpressibleByExtendedGraphemeClusterLiteral, ExpressibleByUnicodeScalarLiteral where Wrapped: ExpressibleByStringLiteral {}

@@ -1,6 +1,7 @@
 /// A wrapper that rags its value on creation.
 ///
 /// Trailing whitespace is removed from each line during initialization.
+/// 
 /// ## Example (underscores represent spaces)
 /// ```
 /// typealias CodeSnippet = Ragged<String>
@@ -16,13 +17,13 @@
 /// _world!
 /// """ */
 /// ```
-public struct Ragged<Value>: Wrapping where Value: Raggable {
+public struct Ragged<Wrapped>: Wrapping where Wrapped: Raggable {
     
     /// The underlying ragged textual value.
-    public let value: Value
+    public let value: Wrapped
     
     /// Creates an instance by ragging the given value.
-    public init(_ value: Value) {
+    public init(_ value: Wrapped) {
         self.value = value.ragged()
     }
     
@@ -32,13 +33,13 @@ public struct Ragged<Value>: Wrapping where Value: Raggable {
 
 // MARK: - Behavior Extensions
 
-extension Ragged: Sequence where Value: Sequence {}
-extension Ragged: Collection where Value: Collection {}
-extension Ragged: BidirectionalCollection where Value: BidirectionalCollection {}
-extension Ragged: Equatable where Value: Equatable {}
-extension Ragged: Hashable where Value: Hashable {}
-extension Ragged: Sendable where Value: Sendable {}
-extension Ragged: Codable where Value: Codable {}
+extension Ragged: Sequence where Wrapped: Sequence {}
+extension Ragged: Collection where Wrapped: Collection {}
+extension Ragged: BidirectionalCollection where Wrapped: BidirectionalCollection {}
+extension Ragged: Equatable where Wrapped: Equatable {}
+extension Ragged: Hashable where Wrapped: Hashable {}
+extension Ragged: Sendable where Wrapped: Sendable {}
+extension Ragged: Codable where Wrapped: Codable {}
 
-extension Ragged: ArrayExpressible, ExpressibleByArrayLiteral where Value: ArrayExpressible {}
-extension Ragged: ExpressibleByStringLiteral, ExpressibleByExtendedGraphemeClusterLiteral, ExpressibleByUnicodeScalarLiteral where Value: ExpressibleByStringLiteral {}
+extension Ragged: ArrayExpressible, ExpressibleByArrayLiteral where Wrapped: ArrayExpressible {}
+extension Ragged: ExpressibleByStringLiteral, ExpressibleByExtendedGraphemeClusterLiteral, ExpressibleByUnicodeScalarLiteral where Wrapped: ExpressibleByStringLiteral {}

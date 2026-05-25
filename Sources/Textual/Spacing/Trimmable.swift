@@ -17,7 +17,7 @@ public protocol Trimmable {
 
 // MARK: - Compatibility Extensions
 
-extension Wrapping where Value: Trimmable {
+extension Wrapping where Wrapped: Trimmable {
     public func trimmed() -> Self {
         return Self(value.trimmed())
     }
@@ -32,10 +32,10 @@ extension String: Trimmable {
 }
 
 
-extension Capitalized: Trimmable where Value: Trimmable {}
-extension Lowercased: Trimmable where Value: Trimmable {}
-extension Uppercased: Trimmable where Value: Trimmable {}
-extension Stripped: Trimmable where Value: Trimmable {}
-extension Truncated: Trimmable where Value: Trimmable {}
-extension Collapsed: Trimmable where Value: Trimmable {}
-extension Ragged: Trimmable where Value: Trimmable {}
+extension Capitalized: Trimmable where Wrapped: Trimmable {}
+extension Lowercased: Trimmable where Wrapped: Trimmable {}
+extension Uppercased: Trimmable where Wrapped: Trimmable {}
+extension Stripped: Trimmable where Wrapped: Trimmable {}
+extension Truncated: Trimmable where Wrapped: Trimmable {}
+extension Collapsed: Trimmable where Wrapped: Trimmable {}
+extension Ragged: Trimmable where Wrapped: Trimmable {}

@@ -5,7 +5,7 @@
 public protocol Wrapping: AnyWrapping {
     
     /// Creates an instance by wrapping the given value.
-    init(_ value: Value)
+    init(_ value: Wrapped)
     
 }
 
@@ -18,10 +18,10 @@ public protocol Wrapping: AnyWrapping {
 public protocol MaybeWrapping: AnyWrapping {
     
     /// Returns a human-readable message describing why the given value is invalid.
-    static func errorMessage(for value: Value) -> String
+    static func errorMessage(for value: Wrapped) -> String
     
     /// Creates an instance by wrapping the given value, or returns `nil` if the value does not satisfy the wrapper's requirements.
-    init?(_ value: Value)
+    init?(_ value: Wrapped)
     
 }
 
@@ -32,10 +32,10 @@ public protocol MaybeWrapping: AnyWrapping {
 public protocol AnyWrapping: CustomStringConvertible {
     
     /// The type of the wrapped underlying value.
-    associatedtype Value
+    associatedtype Wrapped
     
     /// The underlying wrapped value.
-    var value: Value { get }
+    var value: Wrapped { get }
     
 }
 
@@ -45,7 +45,7 @@ public protocol AnyWrapping: CustomStringConvertible {
 
 extension MaybeWrapping {
     
-    public static func errorMessage(for value: Value) -> String {
+    public static func errorMessage(for value: Wrapped) -> String {
         return "Invalid value: \(value)"
     }
     

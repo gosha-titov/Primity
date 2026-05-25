@@ -18,7 +18,7 @@ public protocol Capitalizable {
 
 // MARK: - Compatibility Extensions
 
-extension Wrapping where Value: Capitalizable {
+extension Wrapping where Wrapped: Capitalizable {
     public func capitalized() -> Self {
         return Self(value.capitalized())
     }
@@ -30,8 +30,8 @@ extension String: Capitalizable {
     }
 }
 
-extension Stripped: Capitalizable where Value: Capitalizable {}
-extension Truncated: Capitalizable where Value: Capitalizable {}
-extension Collapsed: Capitalizable where Value: Capitalizable {}
-extension Ragged: Capitalizable where Value: Capitalizable {}
-extension Trimmed: Capitalizable where Value: Capitalizable {}
+extension Stripped: Capitalizable where Wrapped: Capitalizable {}
+extension Truncated: Capitalizable where Wrapped: Capitalizable {}
+extension Collapsed: Capitalizable where Wrapped: Capitalizable {}
+extension Ragged: Capitalizable where Wrapped: Capitalizable {}
+extension Trimmed: Capitalizable where Wrapped: Capitalizable {}

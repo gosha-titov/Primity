@@ -18,7 +18,7 @@ public protocol Strippable {
 
 // MARK: - Compatibility Extensions
 
-extension Wrapping where Value: Strippable {
+extension Wrapping where Wrapped: Strippable {
     public func stripped() -> Self {
         return Self(value.stripped())
     }
@@ -41,13 +41,13 @@ extension String: Strippable {
 }
 
 
-extension Capitalized: Strippable where Value: Strippable {}
-extension Lowercased: Strippable where Value: Strippable {}
-extension Uppercased: Strippable where Value: Strippable {}
-extension Truncated: Strippable where Value: Strippable {}
-extension Collapsed: Strippable where Value: Strippable {}
-extension Ragged: Strippable where Value: Strippable {}
-extension Trimmed: Strippable where Value: Strippable {}
+extension Capitalized: Strippable where Wrapped: Strippable {}
+extension Lowercased: Strippable where Wrapped: Strippable {}
+extension Uppercased: Strippable where Wrapped: Strippable {}
+extension Truncated: Strippable where Wrapped: Strippable {}
+extension Collapsed: Strippable where Wrapped: Strippable {}
+extension Ragged: Strippable where Wrapped: Strippable {}
+extension Trimmed: Strippable where Wrapped: Strippable {}
 
 
 

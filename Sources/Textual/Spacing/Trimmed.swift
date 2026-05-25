@@ -6,13 +6,13 @@
 /// let text = Trimmed(" hello \n")
 /// print(text) // "hello"
 /// ```
-public struct Trimmed<Value>: Wrapping where Value: Trimmable {
+public struct Trimmed<Wrapped>: Wrapping where Wrapped: Trimmable {
     
     /// The underlying trimmed textual value.
-    public let value: Value
+    public let value: Wrapped
     
     /// Creates an instance by trimming the given value.
-    public init(_ value: Value) {
+    public init(_ value: Wrapped) {
         self.value = value.trimmed()
     }
     
@@ -22,13 +22,13 @@ public struct Trimmed<Value>: Wrapping where Value: Trimmable {
 
 // MARK: - Behavior Extensions
 
-extension Trimmed: Sequence where Value: Sequence {}
-extension Trimmed: Collection where Value: Collection {}
-extension Trimmed: BidirectionalCollection where Value: BidirectionalCollection {}
-extension Trimmed: Equatable where Value: Equatable {}
-extension Trimmed: Hashable where Value: Hashable {}
-extension Trimmed: Sendable where Value: Sendable {}
-extension Trimmed: Codable where Value: Codable {}
+extension Trimmed: Sequence where Wrapped: Sequence {}
+extension Trimmed: Collection where Wrapped: Collection {}
+extension Trimmed: BidirectionalCollection where Wrapped: BidirectionalCollection {}
+extension Trimmed: Equatable where Wrapped: Equatable {}
+extension Trimmed: Hashable where Wrapped: Hashable {}
+extension Trimmed: Sendable where Wrapped: Sendable {}
+extension Trimmed: Codable where Wrapped: Codable {}
 
-extension Trimmed: ArrayExpressible, ExpressibleByArrayLiteral where Value: ArrayExpressible {}
-extension Trimmed: ExpressibleByStringLiteral, ExpressibleByExtendedGraphemeClusterLiteral, ExpressibleByUnicodeScalarLiteral where Value: ExpressibleByStringLiteral {}
+extension Trimmed: ArrayExpressible, ExpressibleByArrayLiteral where Wrapped: ArrayExpressible {}
+extension Trimmed: ExpressibleByStringLiteral, ExpressibleByExtendedGraphemeClusterLiteral, ExpressibleByUnicodeScalarLiteral where Wrapped: ExpressibleByStringLiteral {}

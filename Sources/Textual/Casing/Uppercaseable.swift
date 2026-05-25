@@ -15,7 +15,7 @@ public protocol Uppercaseable {
 
 // MARK: - Compatibility Extensions
 
-extension Wrapping where Value: Uppercaseable {
+extension Wrapping where Wrapped: Uppercaseable {
     public func uppercased() -> Self {
         return Self(value.uppercased())
     }
@@ -23,8 +23,8 @@ extension Wrapping where Value: Uppercaseable {
 
 extension String: Uppercaseable {}
 
-extension Stripped: Uppercaseable where Value: Uppercaseable {}
-extension Truncated: Uppercaseable where Value: Uppercaseable {}
-extension Collapsed: Uppercaseable where Value: Uppercaseable {}
-extension Ragged: Uppercaseable where Value: Uppercaseable {}
-extension Trimmed: Uppercaseable where Value: Uppercaseable {}
+extension Stripped: Uppercaseable where Wrapped: Uppercaseable {}
+extension Truncated: Uppercaseable where Wrapped: Uppercaseable {}
+extension Collapsed: Uppercaseable where Wrapped: Uppercaseable {}
+extension Ragged: Uppercaseable where Wrapped: Uppercaseable {}
+extension Trimmed: Uppercaseable where Wrapped: Uppercaseable {}

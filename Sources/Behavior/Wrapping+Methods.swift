@@ -7,7 +7,7 @@
 // They work out of the box.
 //
 
-extension AnyWrapping where Value: Expressible {
+extension AnyWrapping where Wrapped: Expressible {
     
     /// Returns the result of transforming the underlying raw value.
     ///
@@ -17,7 +17,7 @@ extension AnyWrapping where Value: Expressible {
     ///
     /// let string = progress.mapped { "Loading... \($0 * 100)%" }
     /// ```
-    public func mapped<T>(_ transform: (Value.Expressed) throws -> T ) rethrows -> T {
+    public func mapped<T>(_ transform: (Wrapped.Expressed) throws -> T ) rethrows -> T {
         return try transform(value.expressed())
     }
     
@@ -27,31 +27,31 @@ extension AnyWrapping where Value: Expressible {
 
 // MARK: - Default Representations
 
-extension AnyWrapping where Self: AnyExpressible, Value: AnyExpressible, Value.Expressed: _PrimityArray {
+extension AnyWrapping where Self: AnyExpressible, Wrapped: AnyExpressible, Wrapped.Expressed: _PrimityArray {
  
     /// Unwraps the underlying array value.
-    public func asArray() -> Array<Value.Expressed.Element> {
-        return expressed() as! Array<Value.Expressed.Element>
+    public func asArray() -> Array<Wrapped.Expressed.Element> {
+        return expressed() as! Array<Wrapped.Expressed.Element>
     }
     
 }
 
 
-extension AnyWrapping where Self: AnyExpressible, Value: AnyExpressible, Value.Expressed: _PrimityDictionary {
+extension AnyWrapping where Self: AnyExpressible, Wrapped: AnyExpressible, Wrapped.Expressed: _PrimityDictionary {
     
     /// Unwraps the underlying dictionary value.
-    public func asDictionary() -> Dictionary<Value.Expressed.Key, Value.Expressed.Value> {
-        return expressed() as! Dictionary<Value.Expressed.Key, Value.Expressed.Value>
+    public func asDictionary() -> Dictionary<Wrapped.Expressed.Key, Wrapped.Expressed.Value> {
+        return expressed() as! Dictionary<Wrapped.Expressed.Key, Wrapped.Expressed.Value>
     }
     
 }
 
 
-extension AnyWrapping where Self: AnyExpressible, Value: AnyExpressible, Value.Expressed: _PrimitySet {
+extension AnyWrapping where Self: AnyExpressible, Wrapped: AnyExpressible, Wrapped.Expressed: _PrimitySet {
     
     /// Unwraps the underlying set value.
-    public func asSet() -> Set<Value.Expressed.Element> {
-        return expressed() as! Set<Value.Expressed.Element>
+    public func asSet() -> Set<Wrapped.Expressed.Element> {
+        return expressed() as! Set<Wrapped.Expressed.Element>
     }
     
 }
@@ -110,40 +110,40 @@ extension AnyWrapping where Self: AnyExpressible, Expressed == Int {
 
 // MARK: - Array Extensions
 
-extension Wrapping where Self: Expressible, Value: Expressible, Value.Expressed: _PrimityArray {
+extension Wrapping where Self: Expressible, Wrapped: Expressible, Wrapped.Expressed: _PrimityArray {
     
     /// Returns a copy with the element added to the end of the array.
-    public func appending(_ newElement: Value.Expressed.Element) -> Self {
+    public func appending(_ newElement: Wrapped.Expressed.Element) -> Self {
         return mutated { $0.append(newElement) }
     }
     
     /// Returns a copy with the elements added to the end of the array.
-    public func appending<S: Sequence>(contentsOf newElements: S) -> Self where S.Element == Value.Expressed.Element {
+    public func appending<S: Sequence>(contentsOf newElements: S) -> Self where S.Element == Wrapped.Expressed.Element {
         return mutated { $0.append(contentsOf: newElements) }
     }
     
     /// Returns a copy with the element added at the beginning of the array.
-    public func preprending(_ newElement: Value.Expressed.Element) -> Self {
+    public func preprending(_ newElement: Wrapped.Expressed.Element) -> Self {
         return mutated { $0.insert(newElement, at: .zero) }
     }
     
     /// Returns a copy with the elements added at the beginning of the array.
-    public func preprending<C: Collection>(contentsOf newElements: C) -> Self where C.Element == Value.Expressed.Element {
+    public func preprending<C: Collection>(contentsOf newElements: C) -> Self where C.Element == Wrapped.Expressed.Element {
         return mutated { $0.insert(contentsOf: newElements, at: .zero) }
     }
     
     /// Returns a copy with the element inserted at the specified position.
-    public func inserting(_ newElement: Value.Expressed.Element, at index: Int) -> Self {
+    public func inserting(_ newElement: Wrapped.Expressed.Element, at index: Int) -> Self {
         return mutated { $0.insert(newElement, at: index) }
     }
     
     /// Returns a copy with elements inserted at the specified position.
-    public func inserting<C: Collection>(contentsOf newElements: C, at index: Int) -> Self where C.Element == Value.Expressed.Element {
+    public func inserting<C: Collection>(contentsOf newElements: C, at index: Int) -> Self where C.Element == Wrapped.Expressed.Element {
         return mutated { $0.insert(contentsOf: newElements, at: index) }
     }
     
     /// Returns a copy with the element set at the specified position.
-    public func setting(_ newElement: Value.Expressed.Element, at index: Int) -> Self {
+    public func setting(_ newElement: Wrapped.Expressed.Element, at index: Int) -> Self {
         return mutated { $0[index] = newElement }
     }
     
@@ -153,70 +153,70 @@ extension Wrapping where Self: Expressible, Value: Expressible, Value.Expressed:
     }
     
     /// Returns a copy containing all elements but the specified one.
-    public func removing(_ oldElement: Value.Expressed.Element) -> Self where Value.Expressed.Element: Equatable {
+    public func removing(_ oldElement: Wrapped.Expressed.Element) -> Self where Wrapped.Expressed.Element: Equatable {
         return mutated { $0.remove(oldElement) }
     }
     
     /// Returns a copy containing all elements but the specified ones.
-    public func removing<S: Sequence>(contentsOf oldElements: S) -> Self where S.Element == Value.Expressed.Element, S.Element: Equatable {
+    public func removing<S: Sequence>(contentsOf oldElements: S) -> Self where S.Element == Wrapped.Expressed.Element, S.Element: Equatable {
         return mutated { $0.remove(contentsOf: oldElements) }
     }
     
     /// Returns a copy containing the elements except for those that do not satisfy the given predicate.
-    public func removing(where isRemoved: (Value.Expressed.Element) throws -> Bool) rethrows -> Self {
+    public func removing(where isRemoved: (Wrapped.Expressed.Element) throws -> Bool) rethrows -> Self {
         return try filtering { try !isRemoved($0) }
     }
     
     /// Returns a copy containing the elements that satisfy the given predicate.
-    public func filtering(_ isIncluded: (Value.Expressed.Element) throws -> Bool) rethrows -> Self {
+    public func filtering(_ isIncluded: (Wrapped.Expressed.Element) throws -> Bool) rethrows -> Self {
         return try mutated { $0 = try $0.filter(isIncluded) }
     }
     
     
     /// Returns a copy making some changes.
-    private func mutated(_ mutate: (inout [Value.Expressed.Element]) throws -> Void) rethrows -> Self {
+    private func mutated(_ mutate: (inout [Wrapped.Expressed.Element]) throws -> Void) rethrows -> Self {
         var array = asArray()
         try mutate(&array)
-        return Self(expressing: array as! Value.Expressed)
+        return Self(expressing: array as! Wrapped.Expressed)
     }
     
 }
 
 
-extension MaybeWrapping where Self: MaybeExpressible, Value: Expressible, Value.Expressed: _PrimityArray {
+extension MaybeWrapping where Self: MaybeExpressible, Wrapped: Expressible, Wrapped.Expressed: _PrimityArray {
     
     /// Returns a copy with the element added to the end of the array.
-    public func appending(_ newElement: Value.Expressed.Element) -> Self? {
+    public func appending(_ newElement: Wrapped.Expressed.Element) -> Self? {
         return mutated { $0.append(newElement) }
     }
     
     /// Returns a copy with the elements added to the end of the array.
-    public func appending<S: Sequence>(contentsOf newElements: S) -> Self? where S.Element == Value.Expressed.Element {
+    public func appending<S: Sequence>(contentsOf newElements: S) -> Self? where S.Element == Wrapped.Expressed.Element {
         return mutated { $0.append(contentsOf: newElements) }
     }
     
     /// Returns a copy with the element added at the beginning of the array.
-    public func preprending(_ newElement: Value.Expressed.Element) -> Self? {
+    public func preprending(_ newElement: Wrapped.Expressed.Element) -> Self? {
         return mutated { $0.insert(newElement, at: .zero) }
     }
     
     /// Returns a copy with the elements added at the beginning of the array.
-    public func preprending<C: Collection>(contentsOf newElements: C) -> Self? where C.Element == Value.Expressed.Element {
+    public func preprending<C: Collection>(contentsOf newElements: C) -> Self? where C.Element == Wrapped.Expressed.Element {
         return mutated { $0.insert(contentsOf: newElements, at: .zero) }
     }
     
     /// Returns a copy with the element inserted at the specified position.
-    public func inserting(_ newElement: Value.Expressed.Element, at index: Int) -> Self? {
+    public func inserting(_ newElement: Wrapped.Expressed.Element, at index: Int) -> Self? {
         return mutated { $0.insert(newElement, at: index) }
     }
     
     /// Returns a copy with elements inserted at the specified position.
-    public func inserting<C: Collection>(contentsOf newElements: C, at index: Int) -> Self? where C.Element == Value.Expressed.Element {
+    public func inserting<C: Collection>(contentsOf newElements: C, at index: Int) -> Self? where C.Element == Wrapped.Expressed.Element {
         return mutated { $0.insert(contentsOf: newElements, at: index) }
     }
     
     /// Returns a copy with the element set at the specified position.
-    public func setting(_ newElement: Value.Expressed.Element, at index: Int) -> Self? {
+    public func setting(_ newElement: Wrapped.Expressed.Element, at index: Int) -> Self? {
         return mutated { $0[index] = newElement }
     }
     
@@ -226,31 +226,31 @@ extension MaybeWrapping where Self: MaybeExpressible, Value: Expressible, Value.
     }
     
     /// Returns a copy containing all elements but the specified one.
-    public func removing(_ oldElement: Value.Expressed.Element) -> Self? where Value.Expressed.Element: Equatable {
+    public func removing(_ oldElement: Wrapped.Expressed.Element) -> Self? where Wrapped.Expressed.Element: Equatable {
         return mutated { $0.remove(oldElement) }
     }
     
     /// Returns a copy containing all elements but the specified ones.
-    public func removing<S: Sequence>(contentsOf oldElements: S) -> Self? where S.Element == Value.Expressed.Element, S.Element: Equatable {
+    public func removing<S: Sequence>(contentsOf oldElements: S) -> Self? where S.Element == Wrapped.Expressed.Element, S.Element: Equatable {
         return mutated { $0.remove(contentsOf: oldElements) }
     }
     
     /// Returns a copy containing the elements except for those that do not satisfy the given predicate.
-    public func removing(where isRemoved: (Value.Expressed.Element) throws -> Bool) rethrows -> Self? {
+    public func removing(where isRemoved: (Wrapped.Expressed.Element) throws -> Bool) rethrows -> Self? {
         return try filtering { try !isRemoved($0) }
     }
     
     /// Returns a copy containing the elements that satisfy the given predicate.
-    public func filtering(_ isIncluded: (Value.Expressed.Element) throws -> Bool) rethrows -> Self? {
+    public func filtering(_ isIncluded: (Wrapped.Expressed.Element) throws -> Bool) rethrows -> Self? {
         return try mutated { $0 = try $0.filter(isIncluded) }
     }
     
     
     /// Returns a copy making some changes.
-    private func mutated(_ mutate: (inout [Value.Expressed.Element]) throws -> Void) rethrows -> Self? {
+    private func mutated(_ mutate: (inout [Wrapped.Expressed.Element]) throws -> Void) rethrows -> Self? {
         var array = asArray()
         try mutate(&array)
-        return Self(expressing: array as! Value.Expressed)
+        return Self(expressing: array as! Wrapped.Expressed)
     }
     
 }
@@ -259,87 +259,87 @@ extension MaybeWrapping where Self: MaybeExpressible, Value: Expressible, Value.
 
 // MARK: - Set Extensions
 
-extension Wrapping where Self: Expressible, Value: Expressible, Value.Expressed: _PrimitySet {
+extension Wrapping where Self: Expressible, Wrapped: Expressible, Wrapped.Expressed: _PrimitySet {
     
     /// Returns a copy with the element inserted.
-    public func inserting(_ newElement: Value.Expressed.Element) -> Self {
+    public func inserting(_ newElement: Wrapped.Expressed.Element) -> Self {
         return mutated { $0.insert(newElement) }
     }
     
     /// Returns a copy with the element inserted.
-    public func inserting<S: Sequence>(contentsOf newElements: S) -> Self where S.Element == Value.Expressed.Element {
+    public func inserting<S: Sequence>(contentsOf newElements: S) -> Self where S.Element == Wrapped.Expressed.Element {
         return mutated { $0 = $0.union(newElements) }
     }
     
     /// Returns a copy with the element removed.
-    public func removing(_ oldElement: Value.Expressed.Element) -> Self {
+    public func removing(_ oldElement: Wrapped.Expressed.Element) -> Self {
         return mutated { $0.remove(oldElement) }
     }
     
     /// Returns a copy with the elements removed.
-    public func removing<S: Sequence>(contentsOf oldElement: S) -> Self where S.Element == Value.Expressed.Element {
+    public func removing<S: Sequence>(contentsOf oldElement: S) -> Self where S.Element == Wrapped.Expressed.Element {
         return mutated { $0.subtract(oldElement) }
     }
     
     /// Returns a copy containing the elements except for those that do not satisfy the given predicate.
-    public func removing(where isRemoved: (Value.Expressed.Element) throws -> Bool) rethrows -> Self {
+    public func removing(where isRemoved: (Wrapped.Expressed.Element) throws -> Bool) rethrows -> Self {
         return try filtering { try !isRemoved($0) }
     }
     
     /// Returns a copy containing the elements that satisfy the given predicate.
-    public func filtering(_ isIncluded: (Value.Expressed.Element) throws -> Bool) rethrows -> Self {
+    public func filtering(_ isIncluded: (Wrapped.Expressed.Element) throws -> Bool) rethrows -> Self {
         return try mutated { $0 = try $0.filter(isIncluded) }
     }
     
     
     /// Returns a copy making some changes.
-    private func mutated(_ mutate: (inout Set<Value.Expressed.Element>) throws -> Void) rethrows -> Self {
+    private func mutated(_ mutate: (inout Set<Wrapped.Expressed.Element>) throws -> Void) rethrows -> Self {
         var set = asSet()
         try mutate(&set)
-        return Self(expressing: set as! Value.Expressed)
+        return Self(expressing: set as! Wrapped.Expressed)
     }
     
 }
 
 
-extension MaybeWrapping where Self: MaybeExpressible, Value: Expressible, Value.Expressed: _PrimitySet {
+extension MaybeWrapping where Self: MaybeExpressible, Wrapped: Expressible, Wrapped.Expressed: _PrimitySet {
     
     /// Returns a copy with the element inserted.
-    public func inserting(_ newElement: Value.Expressed.Element) -> Self? {
+    public func inserting(_ newElement: Wrapped.Expressed.Element) -> Self? {
         return mutated { $0.insert(newElement) }
     }
     
     /// Returns a copy with the element inserted.
-    public func inserting<S: Sequence>(contentsOf newElements: S) -> Self? where S.Element == Value.Expressed.Element {
+    public func inserting<S: Sequence>(contentsOf newElements: S) -> Self? where S.Element == Wrapped.Expressed.Element {
         return mutated { $0 = $0.union(newElements) }
     }
     
     /// Returns a copy with the element removed.
-    public func removing(_ oldElement: Value.Expressed.Element) -> Self? {
+    public func removing(_ oldElement: Wrapped.Expressed.Element) -> Self? {
         return mutated { $0.remove(oldElement) }
     }
     
     /// Returns a copy with the elements removed.
-    public func removing<S: Sequence>(contentsOf oldElement: S) -> Self? where S.Element == Value.Expressed.Element {
+    public func removing<S: Sequence>(contentsOf oldElement: S) -> Self? where S.Element == Wrapped.Expressed.Element {
         return mutated { $0.subtract(oldElement) }
     }
     
     /// Returns a copy containing the elements except for those that do not satisfy the given predicate.
-    public func removing(where isRemoved: (Value.Expressed.Element) throws -> Bool) rethrows -> Self? {
+    public func removing(where isRemoved: (Wrapped.Expressed.Element) throws -> Bool) rethrows -> Self? {
         return try filtering { try !isRemoved($0) }
     }
     
     /// Returns a copy containing the elements that satisfy the given predicate.
-    public func filtering(_ isIncluded: (Value.Expressed.Element) throws -> Bool) rethrows -> Self? {
+    public func filtering(_ isIncluded: (Wrapped.Expressed.Element) throws -> Bool) rethrows -> Self? {
         return try mutated { $0 = try $0.filter(isIncluded) }
     }
     
     
     /// Returns a copy making some changes.
-    private func mutated(_ mutate: (inout Set<Value.Expressed.Element>) throws -> Void) rethrows -> Self? {
+    private func mutated(_ mutate: (inout Set<Wrapped.Expressed.Element>) throws -> Void) rethrows -> Self? {
         var set = asSet()
         try mutate(&set)
-        return Self(expressing: set as! Value.Expressed)
+        return Self(expressing: set as! Wrapped.Expressed)
     }
     
 }
@@ -348,67 +348,67 @@ extension MaybeWrapping where Self: MaybeExpressible, Value: Expressible, Value.
 
 // MARK: - Dictionary Extensions
 
-extension Wrapping where Self: Expressible, Value: Expressible, Value.Expressed: _PrimityDictionary {
+extension Wrapping where Self: Expressible, Wrapped: Expressible, Wrapped.Expressed: _PrimityDictionary {
     
     /// Returns a copy with the value updated or added for the specified key.
-    public func setting(_ newValue: Value.Expressed.Value, for key: Value.Expressed.Key) -> Self {
+    public func setting(_ newValue: Wrapped.Expressed.Value, for key: Wrapped.Expressed.Key) -> Self {
         return mutated { $0[key] = newValue }
     }
     
     /// Returns a copy with a value removed for the specified key.
-    public func removing(for key: Value.Expressed.Key) -> Self {
+    public func removing(for key: Wrapped.Expressed.Key) -> Self {
         return mutated { $0[key] = nil }
     }
     
     /// Returns a copy containing the key-value pairs except for those that do not satisfy the given predicate.
-    public func removing(where isRemoved: (Dictionary<Value.Expressed.Key, Value.Expressed.Value>.Element) throws -> Bool) rethrows -> Self {
+    public func removing(where isRemoved: (Dictionary<Wrapped.Expressed.Key, Wrapped.Expressed.Value>.Element) throws -> Bool) rethrows -> Self {
         return try filtering { try !isRemoved($0) }
     }
     
     /// Returns a copy containing the elements that satisfy the given predicate.
-    public func filtering(_ isIncluded: (Dictionary<Value.Expressed.Key, Value.Expressed.Value>.Element) throws -> Bool) rethrows -> Self {
+    public func filtering(_ isIncluded: (Dictionary<Wrapped.Expressed.Key, Wrapped.Expressed.Value>.Element) throws -> Bool) rethrows -> Self {
         return try mutated { $0 = try $0.filter(isIncluded) }
     }
     
     
     /// Returns a copy making some changes.
-    private func mutated(_ mutate: (inout Dictionary<Value.Expressed.Key, Value.Expressed.Value>) throws -> Void) rethrows -> Self {
+    private func mutated(_ mutate: (inout Dictionary<Wrapped.Expressed.Key, Wrapped.Expressed.Value>) throws -> Void) rethrows -> Self {
         var dictionary = asDictionary()
         try mutate(&dictionary)
-        return Self(expressing: dictionary as! Value.Expressed)
+        return Self(expressing: dictionary as! Wrapped.Expressed)
     }
     
 }
 
 
-extension MaybeWrapping where Self: MaybeExpressible, Value: Expressible, Value.Expressed: _PrimityDictionary {
+extension MaybeWrapping where Self: MaybeExpressible, Wrapped: Expressible, Wrapped.Expressed: _PrimityDictionary {
     
     /// Returns a copy with the value updated or added for the specified key.
-    public func setting(_ newValue: Value.Expressed.Value, for key: Value.Expressed.Key) -> Self? {
+    public func setting(_ newValue: Wrapped.Expressed.Value, for key: Wrapped.Expressed.Key) -> Self? {
         return mutated { $0[key] = newValue }
     }
     
     /// Returns a copy with a value removed for the specified key.
-    public func removing(for key: Value.Expressed.Key) -> Self? {
+    public func removing(for key: Wrapped.Expressed.Key) -> Self? {
         return mutated { $0[key] = nil }
     }
     
     /// Returns a copy containing the key-value pairs except for those that do not satisfy the given predicate.
-    public func removing(where isRemoved: (Dictionary<Value.Expressed.Key, Value.Expressed.Value>.Element) throws -> Bool) rethrows -> Self? {
+    public func removing(where isRemoved: (Dictionary<Wrapped.Expressed.Key, Wrapped.Expressed.Value>.Element) throws -> Bool) rethrows -> Self? {
         return try filtering { try !isRemoved($0) }
     }
     
     /// Returns a copy containing the elements that satisfy the given predicate.
-    public func filtering(_ isIncluded: (Dictionary<Value.Expressed.Key, Value.Expressed.Value>.Element) throws -> Bool) rethrows -> Self? {
+    public func filtering(_ isIncluded: (Dictionary<Wrapped.Expressed.Key, Wrapped.Expressed.Value>.Element) throws -> Bool) rethrows -> Self? {
         return try mutated { $0 = try $0.filter(isIncluded) }
     }
     
     
     /// Returns a copy making some changes.
-    private func mutated(_ mutate: (inout Dictionary<Value.Expressed.Key, Value.Expressed.Value>) throws -> Void) rethrows -> Self? {
+    private func mutated(_ mutate: (inout Dictionary<Wrapped.Expressed.Key, Wrapped.Expressed.Value>) throws -> Void) rethrows -> Self? {
         var dictionary = asDictionary()
         try mutate(&dictionary)
-        return Self(expressing: dictionary as! Value.Expressed)
+        return Self(expressing: dictionary as! Wrapped.Expressed)
     }
     
 }
@@ -516,40 +516,40 @@ extension MaybeWrapping where Self: MaybeExpressible, Expressed == String {
 
 // MARK: - Number Extensions
 
-extension Wrapping where Self: Expressible, Value: Expressible, Value.Expressed: Numeric {
+extension Wrapping where Self: Expressible, Wrapped: Expressible, Wrapped.Expressed: Numeric {
     
     /// Returns a copy with the given number added to the underlying value.
-    public func adding(_ number: Value.Expressed) -> Self {
+    public func adding(_ number: Wrapped.Expressed) -> Self {
         return Self(expressing: expressed() + number)
     }
     
     /// Returns a copy with the given number subtracted from the underlying value.
-    public func subtracting(_ number: Value.Expressed) -> Self {
+    public func subtracting(_ number: Wrapped.Expressed) -> Self {
         return Self(expressing: expressed() - number)
     }
     
     /// Returns a copy with the underlying value multiplied by the given number.
-    public func multiplying(by number: Value.Expressed) -> Self {
+    public func multiplying(by number: Wrapped.Expressed) -> Self {
         return Self(expressing: expressed() * number)
     }
     
 }
 
 
-extension MaybeWrapping where Self: MaybeExpressible, Value: Expressible, Value.Expressed: Numeric {
+extension MaybeWrapping where Self: MaybeExpressible, Wrapped: Expressible, Wrapped.Expressed: Numeric {
     
     /// Returns a copy with the given number added to the underlying value.
-    public func adding(_ number: Value.Expressed) -> Self? {
+    public func adding(_ number: Wrapped.Expressed) -> Self? {
         return Self(expressing: expressed() + number)
     }
     
     /// Returns a copy with the given number subtracted from the underlying value.
-    public func subtracting(_ number: Value.Expressed) -> Self? {
+    public func subtracting(_ number: Wrapped.Expressed) -> Self? {
         return Self(expressing: expressed() - number)
     }
     
     /// Returns a copy with the underlying value multiplied by the given number.
-    public func multiplying(by number: Value.Expressed) -> Self? {
+    public func multiplying(by number: Wrapped.Expressed) -> Self? {
         return Self(expressing: expressed() * number)
     }
     
@@ -557,20 +557,20 @@ extension MaybeWrapping where Self: MaybeExpressible, Value: Expressible, Value.
 
 
 
-extension Wrapping where Self: Expressible, Value: Expressible, Value.Expressed: FloatingPoint {
+extension Wrapping where Self: Expressible, Wrapped: Expressible, Wrapped.Expressed: FloatingPoint {
     
     /// Returns a copy with the underlying value divided by the given number.
-    public func dividing(by number: Value.Expressed) -> Self {
+    public func dividing(by number: Wrapped.Expressed) -> Self {
         return Self(expressing: expressed() / number)
     }
     
 }
 
 
-extension MaybeWrapping where Self: MaybeExpressible, Value: Expressible, Value.Expressed: FloatingPoint {
+extension MaybeWrapping where Self: MaybeExpressible, Wrapped: Expressible, Wrapped.Expressed: FloatingPoint {
     
     /// Returns a copy with the underlying value divided by the given number.
-    public func dividing(by number: Value.Expressed) -> Self? {
+    public func dividing(by number: Wrapped.Expressed) -> Self? {
         return Self(expressing: expressed() / number)
     }
     

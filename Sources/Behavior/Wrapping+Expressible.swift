@@ -4,11 +4,11 @@
 //
 // In order to make a wrapper expressible by literals, simply add needed lines:
 //
-//      extension YourWrapper: ArrayExpressible, ExpressibleByArrayLiteral where Value: ArrayExpressible {}
-//      extension YourWrapped: DictionaryExpressible, ExpressibleByDictionaryLiteral where Value: DictionaryExpressible {}
-//      extension YourWrapper: ExpressibleByStringLiteral  & ExpressibleByExtendedGraphemeClusterLiteral & ExpressibleByUnicodeScalarLiteral where Value: ExpressibleByStringLiteral {}
-//      extension YourWrapper: ExpressibleByIntegerLiteral where Value: ExpressibleByIntegerLiteral {}
-//      extension YourWrapper: ExpressibleByFloatLiteral where Value: ExpressibleByFloatLiteral {}
+//      extension YourWrapper: ArrayExpressible, ExpressibleByArrayLiteral where Wrapped: ArrayExpressible {}
+//      extension YourWrapped: DictionaryExpressible, ExpressibleByDictionaryLiteral where Wrapped: DictionaryExpressible {}
+//      extension YourWrapper: ExpressibleByStringLiteral  & ExpressibleByExtendedGraphemeClusterLiteral & ExpressibleByUnicodeScalarLiteral where Wrapped: ExpressibleByStringLiteral {}
+//      extension YourWrapper: ExpressibleByIntegerLiteral where Wrapped: ExpressibleByIntegerLiteral {}
+//      extension YourWrapper: ExpressibleByFloatLiteral where Wrapped: ExpressibleByFloatLiteral {}
 //
 // No manual implementations are needed because the default ones are automatically provided.
 //
@@ -25,14 +25,14 @@ public protocol ArrayExpressible: ExpressibleByArrayLiteral {
 }
 
 
-extension Wrapping where Value: ArrayExpressible {
+extension Wrapping where Wrapped: ArrayExpressible {
     
-    public init(arrayLiteral elements: Value.ArrayLiteralElement...) {
+    public init(arrayLiteral elements: Wrapped.ArrayLiteralElement...) {
         self.init(array: elements)
     }
     
-    public init(array: [Value.ArrayLiteralElement]) {
-        self.init(Value(array: array))
+    public init(array: [Wrapped.ArrayLiteralElement]) {
+        self.init(Wrapped(array: array))
     }
     
 }
@@ -64,14 +64,14 @@ public protocol DictionaryExpressible: ExpressibleByDictionaryLiteral where Key:
 }
 
 
-extension Wrapping where Value: DictionaryExpressible {
+extension Wrapping where Wrapped: DictionaryExpressible {
     
-    public init(dictionaryLiteral elements: (Value.Key, Value.Value)...) {
+    public init(dictionaryLiteral elements: (Wrapped.Key, Wrapped.Value)...) {
         self.init(dictionary: Dictionary(elements, uniquingKeysWith: { _, second in second }))
     }
     
-    public init(dictionary: Dictionary<Value.Key, Value.Value>) {
-        self.init(Value(dictionary: dictionary))
+    public init(dictionary: Dictionary<Wrapped.Key, Wrapped.Value>) {
+        self.init(Wrapped(dictionary: dictionary))
     }
     
 }
@@ -89,10 +89,10 @@ extension Optional: @retroactive ExpressibleByDictionaryLiteral where Wrapped: M
 
 // MARK: - String
 
-extension Wrapping where Value: ExpressibleByStringLiteral {
+extension Wrapping where Wrapped: ExpressibleByStringLiteral {
     
-    public init(stringLiteral value: Value.StringLiteralType) {
-        self.init(Value(stringLiteral: value))
+    public init(stringLiteral value: Wrapped.StringLiteralType) {
+        self.init(Wrapped(stringLiteral: value))
     }
     
 }
@@ -110,10 +110,10 @@ extension Optional: @retroactive ExpressibleByStringLiteral, ExpressibleByExtend
 
 // MARK: - Integer
 
-extension Wrapping where Value: ExpressibleByIntegerLiteral {
+extension Wrapping where Wrapped: ExpressibleByIntegerLiteral {
     
-    public init(integerLiteral value: Value.IntegerLiteralType) {
-        self.init(Value(integerLiteral: value))
+    public init(integerLiteral value: Wrapped.IntegerLiteralType) {
+        self.init(Wrapped(integerLiteral: value))
     }
     
 }
@@ -131,10 +131,10 @@ extension Optional: @retroactive ExpressibleByIntegerLiteral where Wrapped: Mayb
 
 // MARK: - Float
 
-extension Wrapping where Value: ExpressibleByFloatLiteral {
+extension Wrapping where Wrapped: ExpressibleByFloatLiteral {
     
-    public init(floatLiteral value: Value.FloatLiteralType) {
-        self.init(Value(floatLiteral: value))
+    public init(floatLiteral value: Wrapped.FloatLiteralType) {
+        self.init(Wrapped(floatLiteral: value))
     }
     
 }

@@ -7,13 +7,13 @@
 /// let text = Truncated("Hello, world! Hello, world! Hello, world!")
 /// print(text) //       "Hello, world! Hello, world! Hell"
 /// ```
-public struct Truncated<Value>: Wrapping where Value: Truncatable {
+public struct Truncated<Wrapped>: Wrapping where Wrapped: Truncatable {
     
     /// The underlying trancated textual value.
-    public let value: Value
+    public let value: Wrapped
     
     /// Creates an instance by truncating the given value.
-    public init(_ value: Value) {
+    public init(_ value: Wrapped) {
         self.value = value.truncated()
     }
     
@@ -23,13 +23,13 @@ public struct Truncated<Value>: Wrapping where Value: Truncatable {
 
 // MARK: - Behavior Extensions
 
-extension Truncated: Sequence where Value: Sequence {}
-extension Truncated: Collection where Value: Collection {}
-extension Truncated: BidirectionalCollection where Value: BidirectionalCollection {}
-extension Truncated: Equatable where Value: Equatable {}
-extension Truncated: Hashable where Value: Hashable {}
-extension Truncated: Sendable where Value: Sendable {}
-extension Truncated: Codable where Value: Codable {}
+extension Truncated: Sequence where Wrapped: Sequence {}
+extension Truncated: Collection where Wrapped: Collection {}
+extension Truncated: BidirectionalCollection where Wrapped: BidirectionalCollection {}
+extension Truncated: Equatable where Wrapped: Equatable {}
+extension Truncated: Hashable where Wrapped: Hashable {}
+extension Truncated: Sendable where Wrapped: Sendable {}
+extension Truncated: Codable where Wrapped: Codable {}
 
-extension Truncated: ArrayExpressible, ExpressibleByArrayLiteral where Value: ArrayExpressible {}
-extension Truncated: ExpressibleByStringLiteral, ExpressibleByExtendedGraphemeClusterLiteral, ExpressibleByUnicodeScalarLiteral where Value: ExpressibleByStringLiteral {}
+extension Truncated: ArrayExpressible, ExpressibleByArrayLiteral where Wrapped: ArrayExpressible {}
+extension Truncated: ExpressibleByStringLiteral, ExpressibleByExtendedGraphemeClusterLiteral, ExpressibleByUnicodeScalarLiteral where Wrapped: ExpressibleByStringLiteral {}

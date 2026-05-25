@@ -17,7 +17,7 @@ public protocol Collapsible {
 
 // MARK: - Compatibility Extensions
 
-extension Wrapping where Value: Collapsible {
+extension Wrapping where Wrapped: Collapsible {
     public func collapsed() -> Self {
         return Self(value.collapsed())
     }
@@ -35,10 +35,10 @@ extension String: Collapsible {
 }
 
 
-extension Capitalized: Collapsible where Value: Collapsible {}
-extension Lowercased: Collapsible where Value: Collapsible {}
-extension Uppercased: Collapsible where Value: Collapsible {}
-extension Stripped: Collapsible where Value: Collapsible {}
-extension Truncated: Collapsible where Value: Collapsible {}
-extension Ragged: Collapsible where Value: Collapsible {}
-extension Trimmed: Collapsible where Value: Collapsible {}
+extension Capitalized: Collapsible where Wrapped: Collapsible {}
+extension Lowercased: Collapsible where Wrapped: Collapsible {}
+extension Uppercased: Collapsible where Wrapped: Collapsible {}
+extension Stripped: Collapsible where Wrapped: Collapsible {}
+extension Truncated: Collapsible where Wrapped: Collapsible {}
+extension Ragged: Collapsible where Wrapped: Collapsible {}
+extension Trimmed: Collapsible where Wrapped: Collapsible {}

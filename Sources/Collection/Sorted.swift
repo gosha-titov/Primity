@@ -10,13 +10,13 @@
 /// let numbers: Numbers = [3, 1, 4, 2]
 /// print(numbers) // [1, 2, 3, 4]
 /// ```
-public struct Sorted<Strategy: SortingStrategy, Value: Sortable>: Wrapping where Value.Element == Strategy.Element {
+public struct Sorted<Strategy: SortingStrategy, Wrapped: Sortable>: Wrapping where Wrapped.Element == Strategy.Element {
     
     /// The underlying sorted collection value.
-    public let value: Value
+    public let value: Wrapped
     
     /// Creates an instance by sorting the given collection.
-    public init(_ value: Value) {
+    public init(_ value: Wrapped) {
         self.value = value.sorted(by: Strategy.areInIncreasingOrder(lhs:rhs:))
     }
     
@@ -52,11 +52,11 @@ public typealias Descended<Value: Sortable> = Sorted<DescendingSortingStrategy<V
 
 // MARK: - Behavior Extensions
 
-extension Sorted: Sequence where Value: Sequence {}
-extension Sorted: Collection where Value: Collection {}
-extension Sorted: BidirectionalCollection where Value: BidirectionalCollection {}
-extension Sorted: Equatable where Value: Equatable {}
-extension Sorted: Hashable where Value: Hashable {}
-extension Sorted: Sendable where Value: Sendable {}
+extension Sorted: Sequence where Wrapped: Sequence {}
+extension Sorted: Collection where Wrapped: Collection {}
+extension Sorted: BidirectionalCollection where Wrapped: BidirectionalCollection {}
+extension Sorted: Equatable where Wrapped: Equatable {}
+extension Sorted: Hashable where Wrapped: Hashable {}
+extension Sorted: Sendable where Wrapped: Sendable {}
 
-extension Sorted: ArrayExpressible, ExpressibleByArrayLiteral where Value: ArrayExpressible {}
+extension Sorted: ArrayExpressible, ExpressibleByArrayLiteral where Wrapped: ArrayExpressible {}

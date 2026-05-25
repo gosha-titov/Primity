@@ -5,13 +5,13 @@
 /// ```
 /// typealias Title = NonEmpty<String>
 /// ```
-public struct NonEmpty<Value>: MaybeWrapping where Value: Emptyable {
+public struct NonEmpty<Wrapped>: MaybeWrapping where Wrapped: Emptyable {
     
     /// The underlying non‑empty value.
-    public let value: Value
+    public let value: Wrapped
     
     /// Creates an instance by wrapping the given value, or returns `nil` if the value is empty.
-    public init?(_ value: Value) {
+    public init?(_ value: Wrapped) {
         guard !value.isEmpty else { return nil }
         self.value = value
     }
@@ -24,12 +24,12 @@ public struct NonEmpty<Value>: MaybeWrapping where Value: Emptyable {
 
 extension NonEmpty {
 
-    public static func errorMessage(for value: Value) -> String {
+    public static func errorMessage(for value: Wrapped) -> String {
         return "Value must not be empty"
     }
     
     /// Creates an instance by wrapping the given value, or returns `nil` if the value exists and not empty.
-    public init?(_ value: Value?) {
+    public init?(_ value: Wrapped?) {
         guard let value, !value.isEmpty else { return nil }
         self.value = value
     }
@@ -37,7 +37,7 @@ extension NonEmpty {
 }
 
 
-extension NonEmpty where Value: Expressible, Value.Expressed: _PrimityArray {
+extension NonEmpty where Wrapped: Expressible, Wrapped.Expressed: _PrimityArray {
     
     /// Creates a non-empty wrapper containing a single element.
     /// ## Example
@@ -53,7 +53,7 @@ extension NonEmpty where Value: Expressible, Value.Expressed: _PrimityArray {
 }
 
 
-extension NonEmpty where Value: Expressible, Value.Expressed: _PrimitySet {
+extension NonEmpty where Wrapped: Expressible, Wrapped.Expressed: _PrimitySet {
     
     /// Creates a non-empty wrapper containing a single-element set.
     /// ## Example
@@ -69,7 +69,7 @@ extension NonEmpty where Value: Expressible, Value.Expressed: _PrimitySet {
 }
 
 
-extension NonEmpty where Value: Expressible, Value.Expressed: _PrimityDictionary {
+extension NonEmpty where Wrapped: Expressible, Wrapped.Expressed: _PrimityDictionary {
     
     /// Creates a non-empty wrapper containing a single key-value pair.
     /// ## Example
@@ -85,46 +85,46 @@ extension NonEmpty where Value: Expressible, Value.Expressed: _PrimityDictionary
 }
 
 
-extension NonEmpty where Value: Collection {
+extension NonEmpty where Wrapped: Collection {
     
     /// The first element of the collection.
-    public var first: Value.Element { value.first! }
+    public var first: Wrapped.Element { value.first! }
     
     /// Returns a random element of the collection.
-    public func random() -> Value.Element {
+    public func random() -> Wrapped.Element {
         return value.randomElement()!
     }
     
 }
 
 
-extension NonEmpty where Value: BidirectionalCollection {
+extension NonEmpty where Wrapped: BidirectionalCollection {
     
     /// The last element of the collection.
-    public var last: Value.Element { value.last! }
+    public var last: Wrapped.Element { value.last! }
     
 }
 
 
-extension NonEmpty where Value: Collection, Value.Element: Comparable {
+extension NonEmpty where Wrapped: Collection, Wrapped.Element: Comparable {
     
     /// Returns the maximum element in the sequence.
-    public func max() -> Value.Element {
+    public func max() -> Wrapped.Element {
         return value.max()!
     }
     
     /// Returns the minimum element in the sequence.
-    public func min() -> Value.Element {
+    public func min() -> Wrapped.Element {
         return value.min()!
     }
     
 }
 
 
-extension NonEmpty: Sequence where Value: Sequence {}
-extension NonEmpty: Collection where Value: Collection {}
-extension NonEmpty: BidirectionalCollection where Value: BidirectionalCollection {}
-extension NonEmpty: Equatable where Value: Equatable {}
-extension NonEmpty: Hashable where Value: Hashable {}
-extension NonEmpty: Sendable where Value: Sendable {}
-extension NonEmpty: Codable where Value: Codable {}
+extension NonEmpty: Sequence where Wrapped: Sequence {}
+extension NonEmpty: Collection where Wrapped: Collection {}
+extension NonEmpty: BidirectionalCollection where Wrapped: BidirectionalCollection {}
+extension NonEmpty: Equatable where Wrapped: Equatable {}
+extension NonEmpty: Hashable where Wrapped: Hashable {}
+extension NonEmpty: Sendable where Wrapped: Sendable {}
+extension NonEmpty: Codable where Wrapped: Codable {}

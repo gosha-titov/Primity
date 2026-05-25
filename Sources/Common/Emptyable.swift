@@ -10,22 +10,22 @@ public protocol Emptyable {
 
 // MARK: - Compatibility Extensions
 
-extension Wrapping where Value: Emptyable {
+extension Wrapping where Wrapped: Emptyable {
     public var isEmpty: Bool {
         return value.isEmpty
     }
 }
 
-extension Sorted: Emptyable where Value: Emptyable {}
+extension Sorted: Emptyable where Wrapped: Emptyable {}
 
-extension Capitalized: Emptyable where Value: Emptyable {}
-extension Lowercased: Emptyable where Value: Emptyable {}
-extension Uppercased: Emptyable where Value: Emptyable {}
-extension Stripped: Emptyable where Value: Emptyable {}
-extension Truncated: Emptyable where Value: Emptyable {}
-extension Collapsed: Emptyable where Value: Emptyable {}
-extension Ragged: Emptyable where Value: Emptyable {}
-extension Trimmed: Emptyable where Value: Emptyable {}
+extension Capitalized: Emptyable where Wrapped: Emptyable {}
+extension Lowercased: Emptyable where Wrapped: Emptyable {}
+extension Uppercased: Emptyable where Wrapped: Emptyable {}
+extension Stripped: Emptyable where Wrapped: Emptyable {}
+extension Truncated: Emptyable where Wrapped: Emptyable {}
+extension Collapsed: Emptyable where Wrapped: Emptyable {}
+extension Ragged: Emptyable where Wrapped: Emptyable {}
+extension Trimmed: Emptyable where Wrapped: Emptyable {}
 
 
 extension Dictionary: Emptyable {}

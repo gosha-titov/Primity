@@ -15,7 +15,7 @@ public protocol Lowercaseable {
 
 // MARK: - Compatibility Extensions
 
-extension Wrapping where Value: Lowercaseable {
+extension Wrapping where Wrapped: Lowercaseable {
     public func lowercased() -> Self {
         return Self(value.lowercased())
     }
@@ -23,8 +23,8 @@ extension Wrapping where Value: Lowercaseable {
 
 extension String: Lowercaseable {}
 
-extension Stripped: Lowercaseable where Value: Lowercaseable {}
-extension Truncated: Lowercaseable where Value: Lowercaseable {}
-extension Collapsed: Lowercaseable where Value: Lowercaseable {}
-extension Ragged: Lowercaseable where Value: Lowercaseable {}
-extension Trimmed: Lowercaseable where Value: Lowercaseable {}
+extension Stripped: Lowercaseable where Wrapped: Lowercaseable {}
+extension Truncated: Lowercaseable where Wrapped: Lowercaseable {}
+extension Collapsed: Lowercaseable where Wrapped: Lowercaseable {}
+extension Ragged: Lowercaseable where Wrapped: Lowercaseable {}
+extension Trimmed: Lowercaseable where Wrapped: Lowercaseable {}

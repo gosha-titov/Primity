@@ -7,13 +7,13 @@
 ///
 /// let value: PieChartSliceValue? = 263.333
 /// ```
-public struct Positive<Value>: MaybeWrapping where Value: Positivable {
+public struct Positive<Wrapped>: MaybeWrapping where Wrapped: Positivable {
     
     /// The underlying positive value.
-    public let value: Value
+    public let value: Wrapped
     
     /// Creates an instance by wrapping the given value, or returns `nil` if the value is not positive.
-    public init?(_ value: Value) {
+    public init?(_ value: Wrapped) {
         guard value.isPositive else { return nil }
         self.value = value
     }
@@ -26,14 +26,14 @@ public struct Positive<Value>: MaybeWrapping where Value: Positivable {
 
 extension Positive {
     
-    public static func errorMessage(for value: Value) -> String {
+    public static func errorMessage(for value: Wrapped) -> String {
         return "Value '\(value)' must be positive"
     }
     
 }
 
 
-extension Positive: Equatable where Value: Equatable {}
-extension Positive: Hashable where Value: Hashable {}
-extension Positive: Sendable where Value: Sendable {}
-extension Positive: Codable where Value: Codable {}
+extension Positive: Equatable where Wrapped: Equatable {}
+extension Positive: Hashable where Wrapped: Hashable {}
+extension Positive: Sendable where Wrapped: Sendable {}
+extension Positive: Codable where Wrapped: Codable {}

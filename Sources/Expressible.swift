@@ -78,41 +78,41 @@ extension Expressible where Expressed == Self {
 
 // MARK: - Compatibility Extensions
 
-extension AnyWrapping where Value: AnyExpressible {
-    public typealias Expressed = Value.Expressed
-    public func expressed() -> Value.Expressed {
+extension AnyWrapping where Wrapped: AnyExpressible {
+    public typealias Expressed = Wrapped.Expressed
+    public func expressed() -> Wrapped.Expressed {
         return value.expressed()
     }
 }
 
-extension Wrapping where Value: Expressible {
-    public init(expressing value: Value.Expressed) {
-        self.init(Value(expressing: value))
+extension Wrapping where Wrapped: Expressible {
+    public init(expressing value: Wrapped.Expressed) {
+        self.init(Wrapped(expressing: value))
     }
 }
 
-extension MaybeWrapping where Value: Expressible {
-    public init?(expressing value: Value.Expressed) {
-        self.init(Value(expressing: value))
+extension MaybeWrapping where Wrapped: Expressible {
+    public init?(expressing value: Wrapped.Expressed) {
+        self.init(Wrapped(expressing: value))
     }
 }
 
-extension NonEmpty: MaybeExpressible, AnyExpressible where Value: Expressible {}
-extension Bounded: MaybeExpressible, AnyExpressible where Value: Expressible {}
-extension Sorted: Expressible, AnyExpressible where Value: Expressible {}
+extension NonEmpty: MaybeExpressible, AnyExpressible where Wrapped: Expressible {}
+extension Bounded: MaybeExpressible, AnyExpressible where Wrapped: Expressible {}
+extension Sorted: Expressible, AnyExpressible where Wrapped: Expressible {}
 
-extension NonNegative: MaybeExpressible, AnyExpressible where Value: Expressible {}
-extension Positive: MaybeExpressible, AnyExpressible where Value: Expressible {}
-extension UnitInterval: Expressible, AnyExpressible where Value: Expressible {}
+extension NonNegative: MaybeExpressible, AnyExpressible where Wrapped: Expressible {}
+extension Positive: MaybeExpressible, AnyExpressible where Wrapped: Expressible {}
+extension UnitInterval: Expressible, AnyExpressible where Wrapped: Expressible {}
 
-extension Capitalized: Expressible, AnyExpressible where Value: Expressible {}
-extension Lowercased: Expressible, AnyExpressible where Value: Expressible {}
-extension Uppercased: Expressible, AnyExpressible where Value: Expressible {}
-extension Stripped: Expressible, AnyExpressible where Value: Expressible {}
-extension Truncated: Expressible, AnyExpressible where Value: Expressible {}
-extension Collapsed: Expressible, AnyExpressible where Value: Expressible {}
-extension Ragged: Expressible, AnyExpressible where Value: Expressible {}
-extension Trimmed: Expressible, AnyExpressible where Value: Expressible {}
+extension Capitalized: Expressible, AnyExpressible where Wrapped: Expressible {}
+extension Lowercased: Expressible, AnyExpressible where Wrapped: Expressible {}
+extension Uppercased: Expressible, AnyExpressible where Wrapped: Expressible {}
+extension Stripped: Expressible, AnyExpressible where Wrapped: Expressible {}
+extension Truncated: Expressible, AnyExpressible where Wrapped: Expressible {}
+extension Collapsed: Expressible, AnyExpressible where Wrapped: Expressible {}
+extension Ragged: Expressible, AnyExpressible where Wrapped: Expressible {}
+extension Trimmed: Expressible, AnyExpressible where Wrapped: Expressible {}
 
 
 extension Array: Expressible {}

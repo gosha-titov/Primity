@@ -251,9 +251,9 @@ Methods are available for arrays, strings, dictionaries, sets and numbers.
 The real power is not just cleaner models. 
 Once a value is created by a wrapper, you can pass it through your system freely.
 
-Before, a method received a String and had to re-check: is it empty? Are there leading spaces? Is the array sorted?
+Before, a method received a `String` and had to re-check: is it empty? Are there leading spaces? Is the array sorted?
 
-Now the method accepts User.Name — and the type already guarantees correctness. 
+Now the method accepts `User.Name` — and the type already guarantees correctness. 
 No guard inside the method, no adjustments. 
 Validation happened once, at creation, and never again.
 
@@ -280,7 +280,7 @@ Tests stay for business logic.
 
 ## `Codable`
 
-A wrapper encodes its inner value directly — no metadata, no value field. 
+A wrapper encodes its inner value directly — no metadata, no `value` field. 
 `JSON` stays flat and backward-compatible.
 
 ```json
@@ -368,21 +368,21 @@ protocol Normalizable {
 Add a default implementation for all wrappers:
 
 ```swift
-extension Wrapping where Value: Normalizable {
+extension Wrapping where Wrapped: Normalizable {
     func normalized() -> Self {
         Self(value.normalized())
     }
 }
 
 // Forward through existing wrappers
-extension Capitalized: Normalizable where Value: Normalizable {}
-extension Lowercased: Normalizable where Value: Normalizable {}
+extension Capitalized: Normalizable where Wrapped: Normalizable {}
+extension Lowercased: Normalizable where Wrapped: Normalizable {}
 ```
 
 ### 2. Create the wrapper
 
 ```swift
-struct Normalized<Value: Normalizable>: Wrapping {
+struct Normalized<Wrapped: Normalizable>: Wrapping {
     let value: Value
     init(_ value: Value) {
         self.value = value.normalized()
@@ -398,27 +398,27 @@ You just declare that your wrapper conforms, and the compiler fills in the rest.
 
 ```swift
 // Standard protocols — no body needed
-extension Normalized: Equatable where Value: Equatable {}
-extension Normalized: Hashable where Value: Hashable {}
-extension Normalized: Sendable where Value: Sendable {}
-extension Normalized: Codable where Value: Codable {}
+extension Normalized: Equatable where Wrapped: Equatable {}
+extension Normalized: Hashable where Wrapped: Hashable {}
+extension Normalized: Sendable where Wrapped: Sendable {}
+extension Normalized: Codable where Wrapped: Codable {}
 
 // Collection — no body needed
-extension Normalized: Sequence where Value: Sequence {}
-extension Normalized: Collection where Value: Collection {}
-extension Normalized: BidirectionalCollection where Value: BidirectionalCollection {}
+extension Normalized: Sequence where Wrapped: Sequence {}
+extension Normalized: Collection where Wrapped: Collection {}
+extension Normalized: BidirectionalCollection where Wrapped: BidirectionalCollection {}
 
 // Literals — no body needed
-extension Normalized: ArrayExpressible, ExpressibleByArrayLiteral where Value: ArrayExpressible {}
-extension Normalized: DictionaryExpressible, ExpressibleByDictionaryLiteral where Value: DictionaryExpressible {}
-extension Normalized: ExpressibleByStringLiteral, ExpressibleByExtendedGraphemeClusterLiteral, ExpressibleByUnicodeScalarLiteral where Value: ExpressibleByStringLiteral {}
-extension Normalized: ExpressibleByIntegerLiteral where Value: ExpressibleByIntegerLiteral {}
-extension Normalized: ExpressibleByFloatLiteral where Value: ExpressibleByFloatLiteral {}
+extension Normalized: ArrayExpressible, ExpressibleByArrayLiteral where Wrapped: ArrayExpressible {}
+extension Normalized: DictionaryExpressible, ExpressibleByDictionaryLiteral where Wrapped: DictionaryExpressible {}
+extension Normalized: ExpressibleByStringLiteral, ExpressibleByExtendedGraphemeClusterLiteral, ExpressibleByUnicodeScalarLiteral where Wrapped: ExpressibleByStringLiteral {}
+extension Normalized: ExpressibleByIntegerLiteral where Wrapped: ExpressibleByIntegerLiteral {}
+extension Normalized: ExpressibleByFloatLiteral where Wrapped: ExpressibleByFloatLiteral {}
 
 // Compatibility with other wrappers — no body needed
-extension Normalized: Emptyable where Value: Emptyable {}
-extension Normalized: Trimmable where Value: Trimmable {}
-extension Normalized: Collapsible where Value: Collapsible {}
+extension Normalized: Emptyable where Wrapped: Emptyable {}
+extension Normalized: Trimmable where Wrapped: Trimmable {}
+extension Normalized: Collapsible where Wrapped: Collapsible {}
 ```
 
 Pick what you need. The rest is automatic.
@@ -464,7 +464,7 @@ Or in `Package.swift`:
 dependencies: [
     .package(
         url: "https://github.com/gosha-titov/Primity.git",
-        .upToNextMinor(from: "2.1.0")
+        .upToNextMinor(from: "2.2.0")
     )
 ]
 ```

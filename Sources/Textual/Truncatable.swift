@@ -16,7 +16,7 @@ public protocol Truncatable {
 
 // MARK: - Compatibility Extensions
 
-extension Wrapping where Value: Truncatable {
+extension Wrapping where Wrapped: Truncatable {
     public func truncated() -> Self {
         return Self(value.truncated())
     }
@@ -28,10 +28,10 @@ extension String: Truncatable {
     }
 }
 
-extension Capitalized: Truncatable where Value: Truncatable {}
-extension Lowercased: Truncatable where Value: Truncatable {}
-extension Uppercased: Truncatable where Value: Truncatable {}
-extension Stripped: Truncatable where Value: Truncatable {}
-extension Collapsed: Truncatable where Value: Truncatable {}
-extension Ragged: Truncatable where Value: Truncatable {}
-extension Trimmed: Truncatable where Value: Truncatable {}
+extension Capitalized: Truncatable where Wrapped: Truncatable {}
+extension Lowercased: Truncatable where Wrapped: Truncatable {}
+extension Uppercased: Truncatable where Wrapped: Truncatable {}
+extension Stripped: Truncatable where Wrapped: Truncatable {}
+extension Collapsed: Truncatable where Wrapped: Truncatable {}
+extension Ragged: Truncatable where Wrapped: Truncatable {}
+extension Trimmed: Truncatable where Wrapped: Truncatable {}

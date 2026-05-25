@@ -8,13 +8,13 @@
 /// let title: Title = "swift best practices"
 /// print(title) //    "Swift Best Practices"
 /// ```
-public struct Capitalized<Value>: Wrapping where Value: Capitalizable {
+public struct Capitalized<Wrapped>: Wrapping where Wrapped: Capitalizable {
     
     /// The underlying capitalized textual value.
-    public let value: Value
+    public let value: Wrapped
     
     /// Creates an instance by capitalizing the given value.
-    public init(_ value: Value) {
+    public init(_ value: Wrapped) {
         self.value = value.capitalized()
     }
     
@@ -24,13 +24,13 @@ public struct Capitalized<Value>: Wrapping where Value: Capitalizable {
 
 // MARK: - Behavior Extensions
 
-extension Capitalized: Sequence where Value: Sequence {}
-extension Capitalized: Collection where Value: Collection {}
-extension Capitalized: BidirectionalCollection where Value: BidirectionalCollection {}
-extension Capitalized: Equatable where Value: Equatable {}
-extension Capitalized: Hashable where Value: Hashable {}
-extension Capitalized: Sendable where Value: Sendable {}
-extension Capitalized: Codable where Value: Codable {}
+extension Capitalized: Sequence where Wrapped: Sequence {}
+extension Capitalized: Collection where Wrapped: Collection {}
+extension Capitalized: BidirectionalCollection where Wrapped: BidirectionalCollection {}
+extension Capitalized: Equatable where Wrapped: Equatable {}
+extension Capitalized: Hashable where Wrapped: Hashable {}
+extension Capitalized: Sendable where Wrapped: Sendable {}
+extension Capitalized: Codable where Wrapped: Codable {}
 
-extension Capitalized: ArrayExpressible, ExpressibleByArrayLiteral where Value: ArrayExpressible {}
-extension Capitalized: ExpressibleByStringLiteral, ExpressibleByExtendedGraphemeClusterLiteral, ExpressibleByUnicodeScalarLiteral where Value: ExpressibleByStringLiteral {}
+extension Capitalized: ArrayExpressible, ExpressibleByArrayLiteral where Wrapped: ArrayExpressible {}
+extension Capitalized: ExpressibleByStringLiteral, ExpressibleByExtendedGraphemeClusterLiteral, ExpressibleByUnicodeScalarLiteral where Wrapped: ExpressibleByStringLiteral {}

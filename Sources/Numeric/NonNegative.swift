@@ -7,13 +7,13 @@
 ///
 /// let level: PlayerLevel? = 48.27
 /// ```
-public struct NonNegative<Value>: MaybeWrapping where Value: Negativable {
+public struct NonNegative<Wrapped>: MaybeWrapping where Wrapped: Negativable {
     
     /// The underlying non‑negative value.
-    public let value: Value
+    public let value: Wrapped
     
     /// Creates an instance by wrapping the given value, or returns `nil` if the value is negative.
-    public init?(_ value: Value) {
+    public init?(_ value: Wrapped) {
         guard !value.isNegative else { return nil }
         self.value = value
     }
@@ -26,13 +26,13 @@ public struct NonNegative<Value>: MaybeWrapping where Value: Negativable {
 
 extension NonNegative {
     
-    public static func errorMessage(for value: Value) -> String {
+    public static func errorMessage(for value: Wrapped) -> String {
         return "Value '\(value)' must not be negative"
     }
     
 }
 
-extension NonNegative: Equatable where Value: Equatable {}
-extension NonNegative: Hashable where Value: Hashable {}
-extension NonNegative: Sendable where Value: Sendable {}
-extension NonNegative: Codable where Value: Codable {}
+extension NonNegative: Equatable where Wrapped: Equatable {}
+extension NonNegative: Hashable where Wrapped: Hashable {}
+extension NonNegative: Sendable where Wrapped: Sendable {}
+extension NonNegative: Codable where Wrapped: Codable {}
