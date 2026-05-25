@@ -54,7 +54,8 @@ extension User: Codable {
 }
 ```
  
-For every model. In a large project that is thousands of lines of boilerplate.
+For every model. In a large project that is thousands of lines of boilerplate — plus all the corresponding tests for empty strings, negative numbers, and unsorted arrays. 
+You end up testing `guard` statements, not business logic.
 
 
 ## The Solution
@@ -128,9 +129,30 @@ print(tag) // "swift development"
 
 ```swift
 typealias TwoThroughNine<Value: Boundable> = Bounded<Bounds.`2`, Bounds.`9`, Value> where Value.Bound == Int
+
 typealias AnswerOption = NonEmpty<Truncated<Collapsed<Trimmed<String>>>>
+
 typealias AnswerOptions = TwoThroughNine<OrderedSet<AnswerOption>>
 ```
+
+
+## Order of Application
+
+Wrappers apply right to left:
+
+```swift
+typealias Tag = Lowercased<<Truncated<<Collapsed<<Trimmed<<Stripped<String>>>>>
+
+// Equivalent chain
+let tag = string
+    .stripped()    // remove decorative symbols
+    .trimmed()     // trim edges
+    .collapsed()   // collapse multiple spaces into one
+    .truncated()   // cut to length limit
+    .lowercased()  // convert to lowercase
+```
+
+Order matters. If you truncate first and then collapse spaces, the result may end up shorter than intended.
 
 
 ### Favorite Textual Compositions
@@ -173,13 +195,11 @@ Custom types use `init(expressing:)`:
 
 ```swift
 typealias Paragraph = NonEmpty<Collapsed<Trimmed<RichText>>>
+
 let paragraph = Paragraph(expressing: text)
-```
 
-Without this you write:
-
-```swift
-let paragraph = Paragraph(Collapsed(Trimmed(text)))
+// Without this you write:
+// let paragraph = Paragraph(Collapsed(Trimmed(text)))
 ```
 
 Extracting values:
@@ -190,6 +210,18 @@ let array = NonEmpty(Ascended([5, 1, 3, 2, 4]))!.asArray()
 let double = NonNegative(95.97)!.asDouble()
 
 let text = Truncated(Collapsed(richText)).expressed()
+```
+
+For your own types, add a convenience method:
+
+```swift
+extension AnyWrapping where Self: AnyExpressible, Expressed == RichText {
+
+    func asRichText() -> RichText {
+        return expressed()
+    }
+    
+}
 ```
 
 
@@ -206,32 +238,90 @@ NonEmpty(["en": "Hello", "fr": "Bonjour"])?
 
 Trimmed("Jobs")
     .prepending("Steve ")
+    
+NonNegative(16.7)?
+    .multiplying(by: 9.4)
 ```
 
 Methods are available for arrays, strings, dictionaries, sets and numbers.
 
 
+## Validate Once
+
+The real power is not just cleaner models. 
+Once a value is created by a wrapper, you can pass it through your system freely.
+
+Before, a method received a String and had to re-check: is it empty? Are there leading spaces? Is the array sorted?
+
+Now the method accepts User.Name — and the type already guarantees correctness. 
+No guard inside the method, no adjustments. 
+Validation happened once, at creation, and never again.
+
+These guarantees shrink your codebase significantly. 
+**Validation disappears not only from models, but from methods, services, controllers, and their tests.**
+
+
 ## Tests Are No Longer Needed
 
-Every initializer used to need tests: empty string, negative number, unsorted array. We tested `guard`, not business logic.
+Every initializer used to need tests: empty string, negative number, unsorted array. 
+We tested `guard`, not business logic.
 
 With wrappers, checks are built into the type. 
 `NonEmpty` cannot be empty because the compiler forbids it. 
 `NonNegative` cannot be negative by definition.
 
-Like `Equatable` or `Hashable` — you do not test that a dictionary hashes keys correctly. 
+Like `Hashable` — you do not test that a dictionary hashes keys correctly. 
 Validation moved from runtime into the type system. 
 Testing it in your models is pointless.
 
-Tests stay for business logic. "Not empty", "not negative", "sorted" — **is no longer your concern**.
+Tests stay for business logic. 
+"Not empty", "not negative", "sorted" — **is no longer your concern**.
 
 
-## Little Note
+## `Codable`
 
-A wrapper never changes the type of the wrapped value. 
-It only validates or adjusts.
+A wrapper encodes its inner value directly — no metadata, no value field. 
+`JSON` stays flat and backward-compatible.
 
-That is why `Mapped` — replacing the element type — is against the philosophy and not implemented.
+```json
+// Encodes and decodes directly
+"swift dev"
+
+// Without this it would be
+{"value":{"value":{"value":{"value":{"value":"swift dev"}}}}}
+```
+
+Wrappers work with the same serialized data you had before. 
+**Nothing to change or adapt anywhere.**
+
+During decoding, the wrapper calls its own `init(_:)` or `init?(_:)`. 
+If validation fails, it throws a clear error: "Value must not be empty", "Value '19' must be within bounds 0...18", and so on.
+
+
+## Performance
+
+A wrapper is a single-field struct. 
+In Swift it is a value type that lives on the stack or inline in its parent — no extra allocations. 
+`NonEmpty<Trimmed<String>>` takes exactly the same memory as `String`.
+
+Also, typealias is an alias, not a new type. 
+If `User.Name` and `Player.Name` point to the same composition, the compiler treats them as one type and does not duplicate metadata.
+
+In practice, unique combinations are few: for string fields, a project typically has only three or four patterns that all models reuse. 
+The overhead is negligible.
+
+
+## Downsides
+
+Migrating an existing project takes time. 
+You need to replace types in models, reconcile code across the system, remove now-redundant checks and tests. 
+New features can be introduced gradually, but it is best to convert a module — or the entire project — in one go.
+
+At boundaries with external libraries, you will need to unwrap and re-wrap: extract the value for an external API, wrap it again on the way back. 
+This is occasionally inconvenient, but it is the price for guarantees inside your own code.
+
+After the transition, the speed of adding new models and methods increases significantly. 
+Less boilerplate, fewer validation tests, less mental overhead when reading code.
 
 
 ## Custom Types
@@ -338,20 +428,25 @@ Pick what you need. The rest is automatic.
 
 Protocol-oriented programming, no magic.
 
-- `Wrapping` — adjusters, init always succeeds
-- `MaybeWrapping` — validators, init fails on bad data
-- `Expressible` — creation from raw values
+The library is built on four base protocols:
 
-Every standard protocol has a default implementation that forwards to `value`. 
-You write `extension Capitalized: Codable where Value: Codable {}` — empty, no body — and `Capitalized<String>` becomes `Codable` instantly. 
+- `AnyWrapping` branches into `Wrapping` (adjusters, init always succeeds) and `MaybeWrapping` (validators, init fails on bad data)
+- `AnyExpressible` branches into `Expressible` (creation from raw values always succeeds) and `MaybeExpressible` (creation may return `nil`)
+
+Every standard protocol has a default implementation that forwards to value.
+You write `extension Capitalized: Codable where Value: Codable {}` — empty, no body — and `Capitalized<String>` becomes `Codable` instantly.
 The wrapper serializes the inner value directly, without metadata.
 
-`NonEmpty<String>` behaves like `String`. 
-`Sorted<Array<Int>>` behaves like `Array`. 
-`Codable`, `Collection`, `Equatable`, `Hashable` — all work out of the box with empty-body extensions.
+Each wrapper requires exactly one protocol from its wrapped value: `Trimmed` asks for `Trimmable`, `Capitalized` asks for `Capitalizable`, `Sorted` asks for `Sortable`. 
+**The wrapper itself does nothing — it merely duplicates the behavior of the wrapped value.**
+
+In a chain like `Capitalized<Trimmed<String>>`, the inner `String` must be both `Capitalizable` and `Trimmable`. 
+Each layer adds one constraint, and the compiler assembles them together.
+`NonEmpty<String>` behaves like `String`.
+`Sorted<Array<Int>>` behaves like `Array`.
+`Codable`, `Collection`, etc — all work out of the box with empty-body extensions.
 
 A wrapper is just a container.
-
 No bridging protocols. No generated code. Just conditional conformance and default implementations.
 
 
@@ -369,7 +464,7 @@ Or in `Package.swift`:
 dependencies: [
     .package(
         url: "https://github.com/gosha-titov/Primity.git",
-        .upToNextMinor(from: "2.0.2")
+        .upToNextMinor(from: "2.1.0")
     )
 ]
 ```
@@ -381,11 +476,3 @@ dependencies: [
 2. **Zero domain knowledge** — No business logic, no external dependencies
 3. **Compose, don't configure** — Stack types instead of passing validation rules
 4. **Fail fast at the boundary** — Invalid values are rejected at creation time
-
-
----
-
-**PS.** I have gutted thousands of lines of validation and adjustment code across the whole project. 
-Models now stack from blocks in seconds. 
-Need something specific — write a wrapper in five lines, it works with everything else. 
-Reads like English. Supports itself. The code describes itself.
