@@ -141,7 +141,7 @@ typealias AnswerOptions = TwoThroughNine<OrderedSet<AnswerOption>>
 Wrappers apply right to left:
 
 ```swift
-typealias Tag = Lowercased<<Truncated<<Collapsed<<Trimmed<<Stripped<String>>>>>
+typealias Tag = Lowercased<Truncated<Collapsed<Trimmed<Stripped<String>>>>>
 
 // Equivalent chain
 let tag = string
@@ -324,6 +324,32 @@ After the transition, the speed of adding new models and methods increases signi
 Less boilerplate, fewer validation tests, less mental overhead when reading code.
 
 
+## Architecture
+
+Protocol-oriented programming, no magic.
+
+The library is built on four base protocols:
+
+- `AnyWrapping` branches into `Wrapping` (adjusters, init always succeeds) and `MaybeWrapping` (validators, init fails on bad data)
+- `AnyExpressible` branches into `Expressible` (creation from raw values always succeeds) and `MaybeExpressible` (creation may return `nil`)
+
+Every standard protocol has a default implementation that forwards to value.
+You write `extension Capitalized: Codable where Value: Codable {}` — empty, no body — and `Capitalized<String>` becomes `Codable` instantly.
+The wrapper serializes the inner value directly, without metadata.
+
+Each wrapper requires exactly one protocol from its wrapped value: `Trimmed` asks for `Trimmable`, `Capitalized` asks for `Capitalizable`, `Sorted` asks for `Sortable`. 
+**The wrapper itself does nothing — it merely duplicates the behavior of the wrapped value.**
+
+In a chain like `Capitalized<Trimmed<String>>`, the inner `String` must be both `Capitalizable` and `Trimmable`. 
+Each layer adds one constraint, and the compiler assembles them together.
+`NonEmpty<String>` behaves like `String`.
+`Sorted<Array<Int>>` behaves like `Array`.
+`Codable`, `Collection`, etc — all work out of the box with empty-body extensions.
+
+A wrapper is just a container.
+No bridging protocols. No generated code. Just conditional conformance and default implementations.
+
+
 ## Custom Types
 
 Conform your type to the required protocol. That is all.
@@ -336,11 +362,11 @@ Conform your type to the required protocol. That is all.
 extension RichText: Expressible {}
 
 extension RichText: Trimmable {
-    func trimmed() -> RichText { /* ... */ }
+    func trimmed() -> RichText {...}
 }
 
 extension RichText: Collapsible {
-    func collapsed() -> RichText { /* ... */ }
+    func collapsed() -> RichText {...}
 }
 
 extension AnyWrapping where Self: AnyExpressible, Expressed == RichText {
@@ -424,32 +450,6 @@ extension Normalized: Collapsible where Wrapped: Collapsible {}
 Pick what you need. The rest is automatic.
 
 
-## Architecture
-
-Protocol-oriented programming, no magic.
-
-The library is built on four base protocols:
-
-- `AnyWrapping` branches into `Wrapping` (adjusters, init always succeeds) and `MaybeWrapping` (validators, init fails on bad data)
-- `AnyExpressible` branches into `Expressible` (creation from raw values always succeeds) and `MaybeExpressible` (creation may return `nil`)
-
-Every standard protocol has a default implementation that forwards to value.
-You write `extension Capitalized: Codable where Value: Codable {}` — empty, no body — and `Capitalized<String>` becomes `Codable` instantly.
-The wrapper serializes the inner value directly, without metadata.
-
-Each wrapper requires exactly one protocol from its wrapped value: `Trimmed` asks for `Trimmable`, `Capitalized` asks for `Capitalizable`, `Sorted` asks for `Sortable`. 
-**The wrapper itself does nothing — it merely duplicates the behavior of the wrapped value.**
-
-In a chain like `Capitalized<Trimmed<String>>`, the inner `String` must be both `Capitalizable` and `Trimmable`. 
-Each layer adds one constraint, and the compiler assembles them together.
-`NonEmpty<String>` behaves like `String`.
-`Sorted<Array<Int>>` behaves like `Array`.
-`Codable`, `Collection`, etc — all work out of the box with empty-body extensions.
-
-A wrapper is just a container.
-No bridging protocols. No generated code. Just conditional conformance and default implementations.
-
-
 ## Installation
 
 Add `Primity` via Swift Package Manager:
@@ -464,7 +464,7 @@ Or in `Package.swift`:
 dependencies: [
     .package(
         url: "https://github.com/gosha-titov/Primity.git",
-        .upToNextMinor(from: "2.2.0")
+        .upToNextMinor(from: "2.2.1")
     )
 ]
 ```
