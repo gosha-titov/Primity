@@ -464,7 +464,7 @@ Or in `Package.swift`:
 dependencies: [
     .package(
         url: "https://github.com/gosha-titov/Primity.git",
-        .upToNextMinor(from: "2.2.1")
+        .upToNextMinor(from: "2.2.2")
     )
 ]
 ```
