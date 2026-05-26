@@ -414,6 +414,16 @@ extension MaybeWrapping where Self: MaybeExpressible, Wrapped: Expressible, Wrap
 }
 
 
+extension AnyWrapping where Self: AnyExpressible, Wrapped: Expressible, Wrapped.Expressed: _PrimityDictionary {
+    
+    /// Returns a value for the specified key.
+    public subscript(key: Wrapped.Expressed.Key) -> Wrapped.Expressed.Value? {
+        get { return asDictionary()[key] }
+    }
+    
+}
+
+
 
 // MARK: - String Extensions
 
