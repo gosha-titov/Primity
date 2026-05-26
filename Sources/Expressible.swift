@@ -55,6 +55,26 @@ public protocol AnyExpressible {
 
 // MARK: - Behavior Extensions
 
+extension Expressible {
+    
+    /// Creates an instance from the given raw value.
+    public static func expressing(_ value: Expressed) -> Self {
+        return Self(expressing: value)
+    }
+    
+}
+
+
+extension MaybeExpressible {
+    
+    /// Creates an instance from the given raw value, or returns `nil` if the value is invalid.
+    public static func expressing(_ value: Expressed) -> Self? {
+        return Self(expressing: value)
+    }
+    
+}
+
+
 extension AnyExpressible where Expressed == Self {
     
     /// Return `self` as the raw value.
