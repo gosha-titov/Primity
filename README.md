@@ -106,14 +106,14 @@ Wrappers come in two flavors.
 **Validators** reject bad input (`init?`):
 - `NonEmpty` — not empty
 - `NonNegative` / `Positive` — numeric bounds
-- `Bounded` — value within bounds
+- `Within` — value within bounds
 
 **Adjusters** always accept and transform:
-- `Trimmed`, `Stripped`, `Collapsed` — whitespace
+- `Trimmed`, `Collapsed`, `Ragged`, `Stripped` — whitespace
 - `Capitalized`, `Lowercased`, `Uppercased` — casing
 - `Sorted` — via `Ascended` / `Descended`
 - `Truncated` — length limit
-- `UnitInterval` — clamps to `0…1`
+- `Clamped` — clamps to a closed range
 
 
 ## Composition
@@ -128,11 +128,21 @@ let tag: Tag? = "  Swift   💙 DEVelopment   💻  "
 ```
 
 ```swift
-typealias TwoThroughNine<Value: Boundable> = Bounded<Bounds.`2`, Bounds.`9`, Value> where Value.Bound == Int
+typealias TwoThroughNine<Value: Withinable> = Within<`2`, `9`, Value> where Value.Bound == Int
 
 typealias AnswerOption = NonEmpty<Truncated<Collapsed<Trimmed<String>>>>
 
 typealias AnswerOptions = TwoThroughNine<OrderedSet<AnswerOption>>
+```
+
+More examples:
+
+```swift
+typealias Rating = Clamped<`1`, `5`, Int>
+
+typealias Percentage = Clamped<`0`, `100`, Int>
+
+typealias Progress = Clamped<`0.0`, `1.0`, Double>
 ```
 
 
@@ -141,15 +151,15 @@ typealias AnswerOptions = TwoThroughNine<OrderedSet<AnswerOption>>
 Wrappers apply right to left:
 
 ```swift
-typealias Tag = Lowercased<Truncated<Collapsed<Trimmed<Stripped<String>>>>>
+typealias Tag = Lowercased<Truncated<`32`, Collapsed<Trimmed<Stripped<String>>>>>
 
 // Equivalent chain
 let tag = string
-    .stripped()    // remove decorative symbols
-    .trimmed()     // trim edges
-    .collapsed()   // collapse multiple spaces into one
-    .truncated()   // cut to length limit
-    .lowercased()  // convert to lowercase
+    .stripped()          // remove decorative symbols
+    .trimmed()           // trim edges
+    .collapsed()         // collapse multiple spaces into one
+    .truncated(to: 32)   // cut to length limit
+    .lowercased()        // convert to lowercase
 ```
 
 Order matters. If you truncate first and then collapse spaces, the result may end up shorter than intended.
@@ -160,13 +170,13 @@ Order matters. If you truncate first and then collapse spaces, the result may en
 Combinations I use every day:
 
 ```swift
-typealias Title = NonEmpty<Truncated<Collapsed<Trimmed<String>>>>
+typealias Title = NonEmpty<Truncated<`256`, Collapsed<Trimmed<String>>>>
 
-typealias Paragraph = NonEmpty<Collapsed<Trimmed<String>>>
+typealias Paragraph = NonEmpty<Truncated<`1024`, Collapsed<Trimmed<String>>>
 
-typealias Name = NonEmpty<Truncated<Collapsed<Trimmed<Stripped<String>>>>>
+typealias Name = NonEmpty<Truncated<`64`, Collapsed<Trimmed<Stripped<String>>>>>
 
-typealias Tag = NonEmpty<Lowercased<Truncated<Collapsed<Trimmed<Stripped<String>>>>>>
+typealias Tag = NonEmpty<Lowercased<Truncated<`32`, Collapsed<Trimmed<Stripped<String>>>>>>
 ```
 
 ```swift
@@ -469,7 +479,7 @@ Or in `Package.swift`:
 dependencies: [
     .package(
         url: "https://github.com/gosha-titov/Primity.git",
-        .upToNextMinor(from: "2.2.4")
+        .upToNextMinor(from: "2.3.0")
     )
 ]
 ```
