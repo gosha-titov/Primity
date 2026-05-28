@@ -37,7 +37,7 @@ extension String: Raggable {
         return self
             .components(separatedBy: .newlines)
             .map { $0.replacingOccurrences(of: "\\s+$", with: "", options: .regularExpression) }
-            .joined(separator: "\n")
+            .joined(separator: .newline)
     }
     
 }
@@ -50,3 +50,14 @@ extension Stripped: Raggable where Wrapped: Raggable {}
 extension Truncated: Raggable where Wrapped: Raggable {}
 extension Collapsed: Raggable where Wrapped: Raggable {}
 extension Trimmed: Raggable where Wrapped: Raggable {}
+
+
+
+// MARK: - Helpers
+
+private extension String {
+    @inline(__always)
+    static var newline: String {
+        return "\n"
+    }
+}

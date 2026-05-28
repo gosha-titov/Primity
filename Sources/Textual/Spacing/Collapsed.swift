@@ -1,6 +1,7 @@
 /// A wrapper that collapses its value on creation.
 ///
 /// Consecutive whitespace is replaced with a single space during initialization.
+///
 /// ## Example
 /// ```
 /// typealias Paragraph = Collapsed<String>

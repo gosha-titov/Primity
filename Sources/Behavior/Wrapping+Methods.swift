@@ -13,9 +13,10 @@ extension AnyWrapping where Wrapped: Expressible {
     ///
     /// ## Example
     /// ```
-    /// let progress = UnitInterval(0.67)
+    /// let progress = UnitInterval(0.674)
     ///
     /// let string = progress.mapped { "Loading... \($0 * 100)%" }
+    /// // "Loading... 67.4%"
     /// ```
     public func mapped<T>(_ transform: (Wrapped.Expressed) throws -> T ) rethrows -> T {
         return try transform(value.expressed())

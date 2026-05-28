@@ -27,7 +27,6 @@ extension Collapsed: Emptyable where Wrapped: Emptyable {}
 extension Ragged: Emptyable where Wrapped: Emptyable {}
 extension Trimmed: Emptyable where Wrapped: Emptyable {}
 
-
 extension Dictionary: Emptyable {}
 extension String: Emptyable {}
 extension Array: Emptyable {}
