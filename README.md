@@ -124,7 +124,7 @@ Stack them. Each layer does one thing.
 typealias Tag = NonEmpty<Lowercased<Truncated<Collapsed<Trimmed<Stripped<String>>>>>>
 
 let tag: Tag? = "  Swift   💙 DEVelopment   💻  "
-print(tag) // "swift development"
+// "swift development"
 ```
 
 ```swift
@@ -187,7 +187,9 @@ Wrappers understand literals:
 
 ```swift
 let string: Trimmed<Stripped<String>> = "hello world"
+
 let array: NonEmpty<Ascended<Array<Int>>>? = [5, 1, 3, 2, 4]
+
 let double: NonNegative<Double>? = 95.97
 ```
 
@@ -206,9 +208,12 @@ Extracting values:
 
 ```swift
 let string = Trimmed(Stripped("swift")).asString()
+
 let array = NonEmpty(Ascended([5, 1, 3, 2, 4]))!.asArray()
+
 let double = NonNegative(95.97)!.asDouble()
 
+// For non-standard types:
 let text = Truncated(Collapsed(richText)).expressed()
 ```
 
@@ -464,7 +469,7 @@ Or in `Package.swift`:
 dependencies: [
     .package(
         url: "https://github.com/gosha-titov/Primity.git",
-        .upToNextMinor(from: "2.2.3")
+        .upToNextMinor(from: "2.2.4")
     )
 ]
 ```
