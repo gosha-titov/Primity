@@ -1,9 +1,12 @@
 /// A wrapper that ensures a value is non-empty.
 ///
 /// Returns `nil` when attempting to wrap an empty value during initialization.
+///
 /// ## Example
 /// ```
 /// typealias Title = NonEmpty<String>
+///
+/// let title: Title? = "Swift Development"
 /// ```
 public struct NonEmpty<Wrapped>: MaybeWrapping where Wrapped: Emptyable {
     
@@ -28,7 +31,7 @@ extension NonEmpty {
         return "Value must not be empty"
     }
     
-    /// Creates an instance by wrapping the given value, or returns `nil` if the value exists and not empty.
+    /// Creates an instance by wrapping the given value, or returns `nil` if the value doesn't exist or empty.
     public init?(_ value: Wrapped?) {
         guard let value, !value.isEmpty else { return nil }
         self.value = value
@@ -37,14 +40,31 @@ extension NonEmpty {
 }
 
 
+extension NonEmpty where Wrapped: Expressible {
+    
+    /// Creates an instance from the given raw value, or returns `nil` if the value doesn't exist or empty.
+    public static func expressing(_ value: Expressed?) -> Self? {
+        return Self(expressing: value)
+    }
+    
+    /// Creates an instance from the given raw value, or returns `nil` if the value doesn't exist or empty.
+    public init?(expressing value: Wrapped.Expressed?) {
+        guard let value else { return nil }
+        self.init(expressing: value)
+    }
+    
+}
+
+
 extension NonEmpty where Wrapped: Expressible, Wrapped.Expressed: _PrimityArray {
     
     /// Creates a non-empty wrapper containing a single element.
+    ///
     /// ## Example
     /// ```
     /// typealias Numbers = NonEmpty<Array<Int>>
     ///
-    /// let numbers: Numbers = .single(10)
+    /// let numbers = Numbers.single(10)
     /// ```
     public static func single(_ element: Expressed.Element) -> Self {
         return NonEmpty(expressing: [element] as! Expressed)!
@@ -55,12 +75,13 @@ extension NonEmpty where Wrapped: Expressible, Wrapped.Expressed: _PrimityArray 
 
 extension NonEmpty where Wrapped: Expressible, Wrapped.Expressed: _PrimitySet {
     
-    /// Creates a non-empty wrapper containing a single-element set.
+    /// Creates a non-empty wrapper containing a single element.
+    ///
     /// ## Example
     /// ```
     /// typealias Numbers = NonEmpty<Set<Int>>
     ///
-    /// let numbers: Numbers = .single(10)
+    /// let numbers = Numbers.single(10)
     /// ```
     public static func single(_ element: Expressed.Element) -> Self {
         return NonEmpty(expressing: Set([element]) as! Expressed)!
@@ -72,11 +93,12 @@ extension NonEmpty where Wrapped: Expressible, Wrapped.Expressed: _PrimitySet {
 extension NonEmpty where Wrapped: Expressible, Wrapped.Expressed: _PrimityDictionary {
     
     /// Creates a non-empty wrapper containing a single key-value pair.
+    ///
     /// ## Example
     /// ```
     /// typealias Greetings = NonEmpty<Dictionary<Stirng, String>>
     ///
-    /// let numbers: Greetings = .single("Hello", for: "en")
+    /// let greetings = Greetings.single("Hello", for: "en")
     /// ```
     public static func single(_ value: Expressed.Value, for key: Expressed.Key) -> Self {
         return NonEmpty(expressing: [key: value] as! Expressed)!
