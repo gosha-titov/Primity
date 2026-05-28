@@ -193,7 +193,7 @@ let tag: Tag? = "  SWIFT  DeV  "
 
 ## Usage
 
-Wrappers understand literals:
+### Wrappers understand literals:
 
 ```swift
 let string: Trimmed<Stripped<String>> = "hello world"
@@ -214,29 +214,30 @@ let paragraph = Paragraph(expressing: text)
 // let paragraph = Paragraph(Collapsed(Trimmed(text)))
 ```
 
-Extracting values:
+### Extracting values:
+
+The `*` operator unwraps any wrapper and returns its raw value. 
+No chaining `.value` through layers.
+
+```swift
+let string = *Trimmed(Stripped("swift"))  // String
+
+let array = *NonEmpty(Ascended([5, 1, 3, 2, 4]))  // [Int]?
+
+let double = *NonNegative(95.97)  // Double?
+```
+
+If you prefer explicit methods, they are still available:
 
 ```swift
 let string = Trimmed(Stripped("swift")).asString()
 
-let array = NonEmpty(Ascended([5, 1, 3, 2, 4]))!.asArray()
+let array = NonEmpty(Ascended([5, 1, 3, 2, 4]))?.asArray()
 
-let double = NonNegative(95.97)!.asDouble()
+let double = NonNegative(95.97)?.asDouble()
 
-// For non-standard types:
+// Base for all types
 let text = Truncated(Collapsed(richText)).expressed()
-```
-
-For your own types, add a convenience method:
-
-```swift
-extension AnyWrapping where Self: AnyExpressible, Expressed == RichText {
-
-    func asRichText() -> RichText {
-        return expressed()
-    }
-    
-}
 ```
 
 
@@ -479,7 +480,7 @@ Or in `Package.swift`:
 dependencies: [
     .package(
         url: "https://github.com/gosha-titov/Primity.git",
-        .upToNextMinor(from: "2.3.0")
+        .upToNextMinor(from: "2.4.0")
     )
 ]
 ```
