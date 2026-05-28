@@ -53,9 +53,9 @@ struct Tests {
     }
     
     
-    @Test func bounded() async throws {
+    @Test func within() async throws {
         
-        typealias TwoThroughFive<Value: Boundable> = Bounded<Bounds.`2`, Bounds.`5`, Value> where Value.Bound == Int
+        typealias TwoThroughFive<Value: Withinable> = Within<Bound.`2`, Bound.`5`, Value> where Value.Bound == Int
         
         #expect(TwoThroughFive<Int>(0) == nil)
         #expect(TwoThroughFive<[Int]>([]) == nil)
@@ -122,7 +122,9 @@ struct Tests {
     }
     
     
-    @Test func unitinterval() async throws {
+    @Test func clamped() async throws {
+        
+        typealias UnitInterval = Clamped<Bound.`0.0`, Bound.`1.0`, Double>
         
         #expect(UnitInterval(-1.0).value == 0.0)
         #expect(UnitInterval(-0.0001).value == 0.0)

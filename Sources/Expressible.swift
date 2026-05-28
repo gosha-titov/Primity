@@ -118,12 +118,12 @@ extension MaybeWrapping where Wrapped: Expressible {
 }
 
 extension NonEmpty: MaybeExpressible, AnyExpressible where Wrapped: Expressible {}
-extension Bounded: MaybeExpressible, AnyExpressible where Wrapped: Expressible {}
+extension Within: MaybeExpressible, AnyExpressible where Wrapped: Expressible {}
 extension Sorted: Expressible, AnyExpressible where Wrapped: Expressible {}
 
 extension NonNegative: MaybeExpressible, AnyExpressible where Wrapped: Expressible {}
 extension Positive: MaybeExpressible, AnyExpressible where Wrapped: Expressible {}
-extension UnitInterval: Expressible, AnyExpressible where Wrapped: Expressible {}
+extension Clamped: Expressible, AnyExpressible where Wrapped: Expressible {}
 
 extension Capitalized: Expressible, AnyExpressible where Wrapped: Expressible {}
 extension Lowercased: Expressible, AnyExpressible where Wrapped: Expressible {}
