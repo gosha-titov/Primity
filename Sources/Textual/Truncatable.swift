@@ -1,14 +1,17 @@
 /// A type that can produce a truncated copy of itself, where excess characters are removed from the end.
 public protocol Truncatable {
     
-    /// Returns a copy truncated to a maximum length.
+    /// The type used for range boundaries.
+    associatedtype Bound
+    
+    /// Returns a copy truncated to the given length.
     ///
     /// ## Example
     /// ```
     /// let string = "Hello, world! Hello, world! Hello, world!"
-    /// string.truncated() // "Hello, world! Hello, world! Hell"
+    /// string.truncated(to: 32) // "Hello, world! Hello, world! Hell"
     /// ```
-    func truncated() -> Self
+    func truncated(to length: Bound) -> Self
     
 }
 
@@ -17,14 +20,14 @@ public protocol Truncatable {
 // MARK: - Compatibility Extensions
 
 extension Wrapping where Wrapped: Truncatable {
-    public func truncated() -> Self {
-        return Self(value.truncated())
+    public func truncated(to length: Wrapped.Bound) -> Self {
+        return Self(value.truncated(to: length))
     }
 }
 
 extension String: Truncatable {
-    public func truncated() -> String {
-        return String(prefix(32))
+    public func truncated(to length: Int) -> String {
+        return String(prefix(length))
     }
 }
 

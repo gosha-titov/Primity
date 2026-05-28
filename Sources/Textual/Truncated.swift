@@ -4,17 +4,19 @@
 ///
 /// ## Example
 /// ```
-/// let text = Truncated("Hello, world! Hello, world! Hello, world!")
-/// print(text) //       "Hello, world! Hello, world! Hell"
+/// typealias Text = Truncated<`32`, String>
+///
+/// let text: Text = "Hello, world! Hello, world! Hello, world!")
+/// //               "Hello, world! Hello, world! Hell"
 /// ```
-public struct Truncated<Wrapped>: Wrapping where Wrapped: Truncatable {
+public struct Truncated<Length: Bound, Wrapped: Truncatable>: Wrapping where Wrapped.Bound == Length.Value {
     
     /// The underlying trancated textual value.
     public let value: Wrapped
     
     /// Creates an instance by truncating the given value.
     public init(_ value: Wrapped) {
-        self.value = value.truncated()
+        self.value = value.truncated(to: Length.value)
     }
     
 }

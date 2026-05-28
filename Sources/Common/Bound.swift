@@ -4,13 +4,11 @@
 ///
 /// ## Example
 /// ```
-/// extension Bound {
-///     enum `16`: Bounding {
-///         static let value = 16
-///     }
+/// enum `16`: Bound {
+///     static let value = 16
 /// }
 /// ```
-public protocol Bounding: Sendable {
+public protocol Bound: Sendable {
     
     /// The type of the bound value.
     associatedtype Value: Comparable
@@ -24,47 +22,42 @@ public protocol Bounding: Sendable {
 
 // MARK: - Default Implementations
 
-/// Pre-defined bounds for common numeric values.
-public enum Bound {
-    
-    public enum `0`: Bounding {
-        public static let value = 0
-    }
-    
-    public enum `0.0`: Bounding {
-        public static let value = 0.0
-    }
-    
-    public enum `1`: Bounding {
-        public static let value = 1
-    }
-    
-    public enum `1.0`: Bounding {
-        public static let value = 1.0
-    }
-    
-    public enum `2`: Bounding {
-        public static let value = 2
-    }
-    
-    public enum `3`: Bounding {
-        public static let value = 3
-    }
-    
-    public enum `4`: Bounding {
-        public static let value = 4
-    }
-    
-    public enum `5`: Bounding {
-        public static let value = 5
-    }
-    
-    public enum `10`: Bounding {
-        public static let value = 10
-    }
-    
-    public enum `100`: Bounding {
-        public static let value = 100
-    }
-    
+public enum `0`: Bound {
+    public static let value = 0
+}
+
+public enum `0.0`: Bound {
+    public static let value = 0.0
+}
+
+public enum `1`: Bound {
+    public static let value = 1
+}
+
+public enum `1.0`: Bound {
+    public static let value = 1.0
+}
+
+public enum `2`: Bound {
+    public static let value = 2
+}
+
+public enum `3`: Bound {
+    public static let value = 3
+}
+
+public enum `4`: Bound {
+    public static let value = 4
+}
+
+public enum `5`: Bound {
+    public static let value = 5
+}
+
+public enum `10`: Bound {
+    public static let value = 10
+}
+
+public enum `100`: Bound {
+    public static let value = 100
 }

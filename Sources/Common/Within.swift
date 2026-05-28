@@ -4,7 +4,7 @@
 ///
 /// ## Example 1
 /// ```
-/// typealias OneThroughFive<Wrapped: Withinable> = Within<Bound.`0`, Bound.`5`, Wrapped> where Wrapped.Bound == Int
+/// typealias OneThroughFive<Wrapped: Withinable> = Within<`1`, `5`, Wrapped> where Wrapped.Bound == Int
 ///
 /// typealias Numbers = OneThroughFive<Array<Int>>
 ///
@@ -13,13 +13,13 @@
 ///
 /// ## Example 2
 /// ```
-/// typealias Child<Wrapped: Withinable> = Within<Bound.`0`, Bound.`18`, Wrapped> where Wrapped.Bound == Int
+/// typealias Child<Wrapped: Withinable> = Within<`0`, `18`, Wrapped> where Wrapped.Bound == Int
 ///
 /// if let child = Child(user) {
 ///     pediatricHospital.makeApointment(for: child)
 /// }
 /// ```
-public struct Within<LowerBound: Bounding, UpperBound: Bounding, Wrapped: Withinable>: MaybeWrapping where LowerBound.Value == UpperBound.Value, LowerBound.Value == Wrapped.Bound {
+public struct Within<LowerBound: Bound, UpperBound: Bound, Wrapped: Withinable>: MaybeWrapping where LowerBound.Value == UpperBound.Value, LowerBound.Value == Wrapped.Bound {
     
     /// The underlying value, guaranteed to be within the specified range.
     public let value: Wrapped

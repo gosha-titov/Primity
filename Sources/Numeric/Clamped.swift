@@ -2,18 +2,18 @@
 ///
 /// ## Example 1
 /// ```
-/// typealias Progress = Clamped<Bound.`0.0`, Bound.`1.0`, Double>
+/// typealias Progress = Clamped<`0.0`, `1.0`, Double>
 ///
 /// let progress: Progress = 0.97
 /// ```
 ///
 /// ## Example 2
 /// ```
-/// typealias Percentage = Clamped<Bound.`0`, Bound.`100`, Int>
+/// typealias Percentage = Clamped<`0`, `100`, Int>
 ///
 /// let percentage: Percentage = 97
 /// ```
-public struct Clamped<LowerBound: Bounding, UpperBound: Bounding, Wrapped: Clampable>: Wrapping where LowerBound.Value == UpperBound.Value, LowerBound.Value == Wrapped.Bound {
+public struct Clamped<LowerBound: Bound, UpperBound: Bound, Wrapped: Clampable>: Wrapping where LowerBound.Value == UpperBound.Value, LowerBound.Value == Wrapped.Bound {
     
     /// The underlying clamped value.
     public let value: Wrapped
