@@ -1,5 +1,5 @@
 /// A type that can be checked against a closed range.
-public protocol Boundable {
+public protocol Withinable {
     
     /// The type used for range boundaries.
     associatedtype Bound: Comparable
@@ -13,43 +13,43 @@ public protocol Boundable {
 
 // MARK: - Compatibility Extensions
 
-extension Array: Boundable {
+extension Array: Withinable {
     public func isWithin(_ range: ClosedRange<Int>) -> Bool {
         return range.contains(count)
     }
 }
 
-extension String: Boundable {
+extension String: Withinable {
     public func isWithin(_ range: ClosedRange<Int>) -> Bool {
         return range.contains(count)
     }
 }
 
-extension Set: Boundable {
+extension Set: Withinable {
     public func isWithin(_ range: ClosedRange<Int>) -> Bool {
         return range.contains(count)
     }
 }
 
-extension Dictionary: Boundable {
+extension Dictionary: Withinable {
     public func isWithin(_ range: ClosedRange<Int>) -> Bool {
         return range.contains(count)
     }
 }
 
-extension Int: Boundable {
+extension Int: Withinable {
     public func isWithin(_ range: ClosedRange<Int>) -> Bool {
         return range.contains(self)
     }
 }
 
-extension Double: Boundable {
+extension Double: Withinable {
     public func isWithin(_ range: ClosedRange<Double>) -> Bool {
         return range.contains(self)
     }
 }
 
-extension Float: Boundable {
+extension Float: Withinable {
     public func isWithin(_ range: ClosedRange<Float>) -> Bool {
         return range.contains(self)
     }
