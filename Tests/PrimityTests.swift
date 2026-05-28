@@ -23,8 +23,8 @@ struct Tests {
         
         typealias Tag = NonEmpty<Lowercased<Truncated<`100`, Collapsed<Trimmed<Stripped<String>>>>>>
         
-        var tag: Tag? = "  Swift   💙 DEvelopment   💻  "
-        #expect(tag!.value == "swift development")
+        var tag: Tag! = "  Swift   💙 DEvelopment   💻  "
+        #expect(*tag == "swift development")
         
         tag = " 💙 \n 💻"
         #expect(tag == nil)
@@ -77,17 +77,17 @@ struct Tests {
     
     @Test func sorted() async throws {
         
-        #expect(Ascended<Array<Int>>([]).value == [])
-        #expect(Descended<Array<Int>>([]).value == [])
+        #expect(*Ascended<Array<Int>>([]) == [])
+        #expect(*Descended<Array<Int>>([]) == [])
         
-        #expect(Ascended([3, 2, 1, 4]).value == [1, 2, 3, 4])
-        #expect(Descended([3, 2, 1, 4]).value == [4, 3, 2, 1])
+        #expect(*Ascended([3, 2, 1, 4]) == [1, 2, 3, 4])
+        #expect(*Descended([3, 2, 1, 4]) == [4, 3, 2, 1])
         
-        #expect(Ascended([3, 1, 2, 1]).value == [1, 1, 2, 3])
-        #expect(Descended([3, 1, 2, 1]).value == [3, 2, 1, 1])
+        #expect(*Ascended([3, 1, 2, 1]) == [1, 1, 2, 3])
+        #expect(*Descended([3, 1, 2, 1]) == [3, 2, 1, 1])
         
-        #expect(Ascended([67]).value == [67])
-        #expect(Descended([67]).value == [67])
+        #expect(*Ascended([67]) == [67])
+        #expect(*Descended([67]) == [67])
         
     }
     
@@ -126,16 +126,16 @@ struct Tests {
         
         typealias UnitInterval = Clamped<`0.0`, `1.0`, Double>
         
-        #expect(UnitInterval(-1.0).value == 0.0)
-        #expect(UnitInterval(-0.0001).value == 0.0)
+        #expect(*UnitInterval(-1.0) == 0.0)
+        #expect(*UnitInterval(-0.0001) == 0.0)
         
-        #expect(UnitInterval(0.0).value == 0.0)
-        #expect(UnitInterval(0.5).value == 0.5)
-        #expect(UnitInterval(0.9999).value == 0.9999)
-        #expect(UnitInterval(1.0).value == 1.0)
+        #expect(*UnitInterval(0.0) == 0.0)
+        #expect(*UnitInterval(0.5) == 0.5)
+        #expect(*UnitInterval(0.9999) == 0.9999)
+        #expect(*UnitInterval(1.0) == 1.0)
         
-        #expect(UnitInterval(1.0001).value == 1.0)
-        #expect(UnitInterval(2.0).value == 1.0)
+        #expect(*UnitInterval(1.0001) == 1.0)
+        #expect(*UnitInterval(2.0) == 1.0)
         
     }
     
