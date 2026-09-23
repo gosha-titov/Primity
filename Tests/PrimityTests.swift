@@ -162,26 +162,37 @@ struct Tests {
     
     
     @Test func ragged() async throws {
-        
-        var string = ""
-        var result: String {
-            return Ragged(string).value
+        func ragged(_ string: String) -> String {
+            return string.ragged()
         }
-        
-        string = "hello world"
-        #expect(result == "hello world")
-        
-        string = "hello    "
-        #expect(result == "hello")
-        
-        string = """
+        #expect(ragged("hello world") == "hello world")
+        #expect(ragged("hello    ") == "hello")
+        #expect(ragged("""
         hello     
         world   \t  
-        """
-        #expect(result == """
+        """) ==  """
         hello
         world
         """)
+        
+        #expect(ragged("a  \nb\t\n") == "a\nb\n")
+        #expect(ragged("a  \r\nb\t\r\nc") == "a\r\nb\r\nc")
+        #expect(ragged("a  \rb  \r") == "a\rb\r")
+        #expect(ragged("a  \u{2028}b \u{2029} ") == "a\u{2028}b\u{2029}")
+        #expect(ragged("a  \nb  \r\nc  \rd  ") == "a\nb\r\nc\rd")
+        
+        #expect(ragged("  a  b  ") == "  a  b")
+        #expect(ragged("\t hello world \t ") == "\t hello world")
+        
+        #expect(ragged("hello   ") == "hello")
+        #expect(ragged("") == "")
+        #expect(ragged("   \t  ") == "")
+        #expect(ragged("a\n   \nb") == "a\n\nb")
+        #expect(ragged("a\r\n \t \r\nb") == "a\r\n\r\nb")
+        #expect(ragged("a\u{A0}\u{A0}") == "a")
+        
+        let once = ragged("  a  \r\n b  \n  ")
+        #expect(ragged(once) == once)
         
     }
     

@@ -34,12 +34,32 @@ extension Wrapping where Wrapped: Raggable {
 extension String: Raggable {
     
     public func ragged() -> String {
-        return self
-            .components(separatedBy: .newlines)
-            .map { $0.replacingOccurrences(of: "\\s+$", with: "", options: .regularExpression) }
-            .joined(separator: .newline)
-    }
+            var result = String()
+            result.reserveCapacity(utf8.count)
+            var trailingWhitespace = String()
+            for character in self {
+                if character.isNewline {
+                    trailingWhitespace.removeAll(keepingCapacity: true)
+                    result.append(character)
+                } else if character.isWhitespaceOnly {
+                    trailingWhitespace.append(character)
+                } else {
+                    result.append(trailingWhitespace)
+                    trailingWhitespace.removeAll(keepingCapacity: true)
+                    result.append(character)
+                }
+            }
+            return result
+        }
     
+}
+
+
+private extension Character {
+    @inline(__always)
+    var isWhitespaceOnly: Bool {
+        return unicodeScalars.allSatisfy(\.properties.isWhitespace)
+    }
 }
 
 
