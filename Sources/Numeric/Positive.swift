@@ -33,6 +33,7 @@ extension Positive {
 }
 
 
+extension Positive: Comparable where Wrapped: Comparable {}
 extension Positive: Equatable where Wrapped: Equatable {}
 extension Positive: Hashable where Wrapped: Hashable {}
 extension Positive: Sendable where Wrapped: Sendable {}

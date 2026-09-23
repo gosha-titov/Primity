@@ -32,6 +32,7 @@ public struct Clamped<LowerBound: Bound, UpperBound: Bound, Wrapped: Clampable>:
 
 extension Clamped: ExpressibleByIntegerLiteral where Wrapped: ExpressibleByIntegerLiteral {}
 extension Clamped: ExpressibleByFloatLiteral where Wrapped: ExpressibleByFloatLiteral {}
+extension Clamped: Comparable where Wrapped: Comparable {}
 extension Clamped: Equatable where Wrapped: Equatable {}
 extension Clamped: Hashable where Wrapped: Hashable {}
 extension Clamped: Sendable where Wrapped: Sendable {}

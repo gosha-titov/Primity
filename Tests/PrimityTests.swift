@@ -165,8 +165,12 @@ struct Tests {
         func ragged(_ string: String) -> String {
             return string.ragged()
         }
+        
+        #expect(ragged("") == "")
         #expect(ragged("hello world") == "hello world")
         #expect(ragged("hello    ") == "hello")
+        #expect(ragged("\t hello world \t ") == "\t hello world")
+        #expect(ragged("   \t  ") == "")
         #expect(ragged("""
         hello     
         world   \t  
@@ -182,38 +186,25 @@ struct Tests {
         #expect(ragged("a  \nb  \r\nc  \rd  ") == "a\nb\r\nc\rd")
         
         #expect(ragged("  a  b  ") == "  a  b")
-        #expect(ragged("\t hello world \t ") == "\t hello world")
-        
-        #expect(ragged("hello   ") == "hello")
-        #expect(ragged("") == "")
-        #expect(ragged("   \t  ") == "")
         #expect(ragged("a\n   \nb") == "a\n\nb")
         #expect(ragged("a\r\n \t \r\nb") == "a\r\n\r\nb")
         #expect(ragged("a\u{A0}\u{A0}") == "a")
         
         let once = ragged("  a  \r\n b  \n  ")
         #expect(ragged(once) == once)
-        
     }
     
     
     @Test func stripped() async throws {
-        
-        var string = ""
-        var result: String {
-            return Stripped(string).value
+        func stripped(_ string: String) -> String {
+            return string.stripped()
         }
         
-        #expect(result == "")
-        
-        string = "hello world"
-        #expect(result == "hello world")
-        
-        string = "👋🌍3️⃣"
-        #expect(result == "")
-        
-        string = "Hello, 👋 World! 🌍 Let's meet at 3️⃣ PM."
-        #expect(result == "Hello,  World!  Let's meet at  PM.")
+        #expect(stripped("") == "")
+        #expect(stripped("0 1 2 3 4 5 6 7 8 9 # & ! @ \" # $ % ^ , . * ( )") == "0 1 2 3 4 5 6 7 8 9 # & ! @ \" # $ % ^ , . * ( )")
+        #expect(stripped("hello world") == "hello world")
+        #expect(stripped("👋🌍3️⃣") == "")
+        #expect(stripped("Hello, 👋 World! 🌍 Let's meet at 3️⃣ PM.") == "Hello,  World!  Let's meet at  PM.")
         
     }
     

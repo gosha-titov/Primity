@@ -32,6 +32,8 @@ extension NonNegative {
     
 }
 
+
+extension NonNegative: Comparable where Wrapped: Comparable {}
 extension NonNegative: Equatable where Wrapped: Equatable {}
 extension NonNegative: Hashable where Wrapped: Hashable {}
 extension NonNegative: Sendable where Wrapped: Sendable {}

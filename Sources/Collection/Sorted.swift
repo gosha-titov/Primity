@@ -58,5 +58,6 @@ extension Sorted: BidirectionalCollection where Wrapped: BidirectionalCollection
 extension Sorted: Equatable where Wrapped: Equatable {}
 extension Sorted: Hashable where Wrapped: Hashable {}
 extension Sorted: Sendable where Wrapped: Sendable {}
+extension Sorted: Codable where Wrapped: Codable {}
 
 extension Sorted: ArrayExpressible, ExpressibleByArrayLiteral where Wrapped: ArrayExpressible {}
