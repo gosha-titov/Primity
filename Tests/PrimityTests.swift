@@ -162,6 +162,7 @@ struct Tests {
     
     
     @Test func ragged() async throws {
+        
         func ragged(_ string: String) -> String {
             return string.ragged()
         }
@@ -192,10 +193,12 @@ struct Tests {
         
         let once = ragged("  a  \r\n b  \n  ")
         #expect(ragged(once) == once)
+        
     }
     
     
     @Test func stripped() async throws {
+        
         func stripped(_ string: String) -> String {
             return string.stripped()
         }
