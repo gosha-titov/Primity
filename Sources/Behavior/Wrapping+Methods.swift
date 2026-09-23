@@ -124,12 +124,12 @@ extension Wrapping where Self: Expressible, Wrapped: Expressible, Wrapped.Expres
     }
     
     /// Returns a copy with the element added at the beginning of the array.
-    public func preprending(_ newElement: Wrapped.Expressed.Element) -> Self {
+    public func prepending(_ newElement: Wrapped.Expressed.Element) -> Self {
         return mutated { $0.insert(newElement, at: .zero) }
     }
     
     /// Returns a copy with the elements added at the beginning of the array.
-    public func preprending<C: Collection>(contentsOf newElements: C) -> Self where C.Element == Wrapped.Expressed.Element {
+    public func prepending<C: Collection>(contentsOf newElements: C) -> Self where C.Element == Wrapped.Expressed.Element {
         return mutated { $0.insert(contentsOf: newElements, at: .zero) }
     }
     
@@ -197,12 +197,12 @@ extension MaybeWrapping where Self: MaybeExpressible, Wrapped: Expressible, Wrap
     }
     
     /// Returns a copy with the element added at the beginning of the array.
-    public func preprending(_ newElement: Wrapped.Expressed.Element) -> Self? {
+    public func prepending(_ newElement: Wrapped.Expressed.Element) -> Self? {
         return mutated { $0.insert(newElement, at: .zero) }
     }
     
     /// Returns a copy with the elements added at the beginning of the array.
-    public func preprending<C: Collection>(contentsOf newElements: C) -> Self? where C.Element == Wrapped.Expressed.Element {
+    public func prepending<C: Collection>(contentsOf newElements: C) -> Self? where C.Element == Wrapped.Expressed.Element {
         return mutated { $0.insert(contentsOf: newElements, at: .zero) }
     }
     
@@ -441,12 +441,12 @@ extension Wrapping where Self: Expressible, Expressed == String {
     }
     
     /// Returns a copy with the character added at the beginning of the array.
-    public func preprending(_ newCharacter: Character) -> Self {
+    public func prepending(_ newCharacter: Character) -> Self {
         return mutated { $0.insert(newCharacter, at: $0.startIndex) }
     }
     
     /// Returns a copy with the characters added at the beginning of the array.
-    public func preprending<C: Collection>(contentsOf newCharacters: C) -> Self where C.Element == Character {
+    public func prepending<C: Collection>(contentsOf newCharacters: C) -> Self where C.Element == Character {
         return mutated { $0.insert(contentsOf: newCharacters, at: $0.startIndex) }
     }
     
@@ -489,12 +489,12 @@ extension MaybeWrapping where Self: MaybeExpressible, Expressed == String {
     }
     
     /// Returns a copy with the character added at the beginning of the array.
-    public func preprending(_ newCharacter: Character) -> Self? {
+    public func prepending(_ newCharacter: Character) -> Self? {
         return mutated { $0.insert(newCharacter, at: $0.startIndex) }
     }
     
     /// Returns a copy with the characters added at the beginning of the array.
-    public func preprending<C: Collection>(contentsOf newCharacters: C) -> Self? where C.Element == Character {
+    public func prepending<C: Collection>(contentsOf newCharacters: C) -> Self? where C.Element == Character {
         return mutated { $0.insert(contentsOf: newCharacters, at: $0.startIndex) }
     }
     
