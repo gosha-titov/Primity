@@ -3,7 +3,7 @@
 
 # Primity
 
-Type primitives for Swift that move validation from runtime to compile time.
+Type primitives for Swift that move validation into the type system.
 
 No `guard`. No manual `Codable`. No tests for "not empty". Stack types and get guarantees for free.
 
@@ -82,7 +82,8 @@ The type `Name` says: non-empty, trimmed.
 `Progress` says: non-negative.
 
 `Codable` works automatically. 
-Wrappers serialize their contents directly, without metadata.
+Wrappers serialize their contents directly, without metadata. 
+Decoding invalid data — say, a whitespace-only `name` — throws a descriptive error, no hand-written code involved.
 
 
 ### Why nested typealiases?
@@ -106,10 +107,10 @@ Wrappers come in two flavors.
 **Validators** reject bad input (`init?`):
 - `NonEmpty` — not empty
 - `NonNegative` / `Positive` — numeric bounds
-- `Within` — value within bounds
+- `Within` — value (or element count) within bounds
 
 **Adjusters** always accept and transform:
-- `Trimmed`, `Collapsed`, `Ragged`, `Stripped` — whitespace
+- `Trimmed`, `Collapsed`, `Ragged`, `Stripped` — whitespace and decorative symbols
 - `Capitalized`, `Lowercased`, `Uppercased` — casing
 - `Sorted` — via `Ascended` / `Descended`
 - `Truncated` — length limit
@@ -172,7 +173,7 @@ Combinations I use every day:
 ```swift
 typealias Title = NonEmpty<Truncated<`256`, Collapsed<Trimmed<String>>>>
 
-typealias Paragraph = NonEmpty<Truncated<`1024`, Collapsed<Trimmed<String>>>
+typealias Paragraph = NonEmpty<Truncated<`1024`, Collapsed<Trimmed<String>>>>
 
 typealias Name = NonEmpty<Truncated<`64`, Collapsed<Trimmed<Stripped<String>>>>>
 
@@ -211,7 +212,7 @@ typealias Paragraph = NonEmpty<Collapsed<Trimmed<RichText>>>
 let paragraph = Paragraph(expressing: text)
 
 // Without this you write:
-// let paragraph = Paragraph(Collapsed(Trimmed(text)))
+let paragraph = Paragraph(Collapsed(Trimmed(text)))
 ```
 
 ### Extracting values:
@@ -283,11 +284,11 @@ Every initializer used to need tests: empty string, negative number, unsorted ar
 We tested `guard`, not business logic.
 
 With wrappers, checks are built into the type. 
-`NonEmpty` cannot be empty because the compiler forbids it. 
-`NonNegative` cannot be negative by definition.
+`NonEmpty` cannot hold an empty value because its only initializer rejects it. 
+`NonNegative` cannot hold a negative number by definition.
 
 Like `Hashable` — you do not test that a dictionary hashes keys correctly. 
-Validation moved from runtime into the type system. 
+Validation moved from your code into the type system. 
 Testing it in your models is pointless.
 
 Tests stay for business logic. 
@@ -336,6 +337,9 @@ New features can be introduced gradually, but it is best to convert a module —
 At boundaries with external libraries, you will need to unwrap and re-wrap: extract the value for an external API, wrap it again on the way back. 
 This is occasionally inconvenient, but it is the price for guarantees inside your own code.
 
+Validation itself happens at creation time — the compiler cannot know whether a string from the network is empty. 
+What the type system gives you is that the check runs exactly once, at the boundary, and can never be skipped afterwards.
+
 After the transition, the speed of adding new models and methods increases significantly. 
 Less boilerplate, fewer validation tests, less mental overhead when reading code.
 
@@ -350,7 +354,7 @@ The library is built on four base protocols:
 - `AnyExpressible` branches into `Expressible` (creation from raw values always succeeds) and `MaybeExpressible` (creation may return `nil`)
 
 Every standard protocol has a default implementation that forwards to value.
-You write `extension Capitalized: Codable where Value: Codable {}` — empty, no body — and `Capitalized<String>` becomes `Codable` instantly.
+You write `extension Capitalized: Codable where Wrapped: Codable {}` — empty, no body — and `Capitalized<String>` becomes `Codable` instantly.
 The wrapper serializes the inner value directly, without metadata.
 
 Each wrapper requires exactly one protocol from its wrapped value: `Trimmed` asks for `Trimmable`, `Capitalized` asks for `Capitalizable`, `Sorted` asks for `Sortable`. 
@@ -385,13 +389,19 @@ extension RichText: Collapsible {
     func collapsed() -> RichText {...}
 }
 
+extension RichText: Emptyable {
+    var isEmpty: Bool {
+        return string.isEmpty
+    }
+}
+
 extension AnyWrapping where Self: AnyExpressible, Expressed == RichText {
     func asRichText() -> RichText {
         return expressed()
     }
 }
 
-typealias Bio = Collapsed<Trimmed<RichText>>
+typealias Bio = NonEmpty<Collapsed<Trimmed<RichText>>>
 ```
 
 
@@ -412,21 +422,28 @@ Add a default implementation for all wrappers:
 ```swift
 extension Wrapping where Wrapped: Normalizable {
     func normalized() -> Self {
-        Self(value.normalized())
+        return Self(value.normalized())
     }
 }
 
-// Forward through existing wrappers
+// Conform your content types
+extension String: Normalizable {
+    func normalized() -> String {
+        return lowercased()
+    }
+}
+
+// Forward the behavior through the library's wrappers
+extension Trimmed: Normalizable where Wrapped: Normalizable {}
 extension Capitalized: Normalizable where Wrapped: Normalizable {}
-extension Lowercased: Normalizable where Wrapped: Normalizable {}
 ```
 
 ### 2. Create the wrapper
 
 ```swift
 struct Normalized<Wrapped: Normalizable>: Wrapping {
-    let value: Value
-    init(_ value: Value) {
+    let value: Wrapped
+    init(_ value: Wrapped) {
         self.value = value.normalized()
     }
 }
@@ -439,6 +456,9 @@ That is the trick.
 You just declare that your wrapper conforms, and the compiler fills in the rest.
 
 ```swift
+// Raw-value conversion — required for literals and `expressing` to work
+extension Normalized: Expressible, AnyExpressible where Wrapped: Expressible {}
+
 // Standard protocols — no body needed
 extension Normalized: Equatable where Wrapped: Equatable {}
 extension Normalized: Hashable where Wrapped: Hashable {}
@@ -480,7 +500,7 @@ Or in `Package.swift`:
 dependencies: [
     .package(
         url: "https://github.com/gosha-titov/Primity.git",
-        .upToNextMinor(from: "2.4.0")
+        .upToNextMinor(from: "2.5.0")
     )
 ]
 ```
